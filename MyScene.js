@@ -9,6 +9,7 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 import { Pincho } from './pincho.js'
 import { Seta } from './seta.js'
+import { Rayo } from './rayo.js'
 
  
 /// La clase fachada del modelo
@@ -57,6 +58,12 @@ class MyScene extends THREE.Scene {
     this.ejesPincho.position.y = 12;
     this.add(this.ejesPincho);
 
+    //Ejes Rayo
+    this.ejesRayo = new THREE.AxesHelper(5);
+    this.ejesRayo.position.x = 2.5;
+    this.ejesRayo.position.z = -15.5;
+    this.add(this.ejesRayo);
+
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
@@ -67,7 +74,8 @@ class MyScene extends THREE.Scene {
     this.pincho = new Pincho( this.gui, "Controles pincho");
     this.ejesPincho.add(this.pincho);
 
-
+    this.rayo = new Rayo(this.gui, "Controles rayo");
+    this.ejesRayo.add(this.rayo);
 
   }
   
