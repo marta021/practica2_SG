@@ -1,14 +1,14 @@
 
 // Clases de la biblioteca
-// import * as THREE from "three"
 
-import * as THREE from '../libs/three.module.js'
-import { GUI } from '../libs/dat.gui.module.js'
-import { TrackballControls } from '../libs/TrackballControls.js'
+import * as THREE from '../../libs/three.module.js'
+import { GUI } from '../../libs/dat.gui.module.js'
+import { TrackballControls } from '../../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 
-import { Estrella } from './Estrella.js'
+import { Tubo } from './Tubo.js'
+import { Modelo } from './Coche.js'
 
  
 /// La clase fachada del modelo
@@ -41,16 +41,18 @@ class MyScene extends THREE.Scene {
     //this.createGround ();
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
-    // Todas las unidades están en metros
-    this.axis = new THREE.AxesHelper (10);
-    this.add (this.axis);
-    
-    
+    this.axis = new THREE.AxesHelper (5);
+   this.add (this.axis);
+
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Estrella(this.gui, "NO SE IMPLEMENTA");
-    this.add(this.model);
+
+    this.tubo = new Tubo(this.gui, "Controles tubo");
+    this.add(this.tubo);
+    this.coche = new Modelo(this.gui, "Controles coche");
+    this.add(this.coche);
+
   }
   
   createCamera () {
@@ -58,9 +60,9 @@ class MyScene extends THREE.Scene {
     //   El ángulo del campo de visión vértical en grados sexagesimales
     //   La razón de aspecto ancho/alto
     //   Los planos de recorte cercano y lejano
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 50);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (3, 1.5, 1);
+    this.camera.position.set (6, 3, 6);
     // Y hacia dónde mira
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);
@@ -81,18 +83,18 @@ class MyScene extends THREE.Scene {
     // El suelo es un Mesh, necesita una geometría y un material.
     
     // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (0.5,0.02,0.5);
+    var geometryGround = new THREE.BoxGeometry (50,0.2,50);
     
     // El material se hará con una textura de madera
     var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshStandardMaterial ({map: texture});
+    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
     
     // Ya se puede construir el Mesh
     var ground = new THREE.Mesh (geometryGround, materialGround);
     
     // Todas las figuras se crean centradas en el origen.
     // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.01;
+    ground.position.y = -0.1;
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
     this.add (ground);
@@ -103,28 +105,22 @@ class MyScene extends THREE.Scene {
     var gui = new GUI();
     
     // La escena le va a añadir sus propios controles. 
-    // Se definen mediante un objeto de control
+    // Se definen mediante una   new function()
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
-      lightPower : 100.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      ambientIntensity : 0.35,
+      lightIntensity : 0.5,
       axisOnOff : true
     }
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder ('Luz y Ejes');
     
-    // Se le añade un control para la potencia de la luz puntual
-    folder.add (this.guiControls, 'lightPower', 0, 200, 10)
-      .name('Luz puntual : ')
-      .onChange ( (value) => this.setLightPower(value) );
+    // Se le añade un control para la intensidad de la luz
+    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1)
+      .name('Intensidad de la Luz : ')
+      .onChange ( (value) => this.setLightIntensity (value) );
     
-    // Otro para la intensidad de la luz ambiental
-    folder.add (this.guiControls, 'ambientIntensity', 0, 1, 0.05)
-      .name('Luz ambiental: ')
-      .onChange ( (value) => this.setAmbientIntensity(value) );
-      
     // Y otro para mostrar u ocultar los ejes
     folder.add (this.guiControls, 'axisOnOff')
       .name ('Mostrar ejes : ')
@@ -138,27 +134,22 @@ class MyScene extends THREE.Scene {
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    this.ambientLight = new THREE.AmbientLight('white', this.guiControls.ambientIntensity);
+    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
     // La añadimos a la escena
-    this.add (this.ambientLight);
+    this.add (ambientLight);
     
     // Se crea una luz focal que va a ser la luz principal de la escena
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.pointLight = new THREE.SpotLight( 0xffffff );
-    this.pointLight.power = this.guiControls.lightPower;
-    this.pointLight.position.set( 2, 3, 1 );
-    this.add (this.pointLight);
+    this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
+    this.spotLight.position.set( 60, 60, 40 );
+    this.add (this.spotLight);
   }
   
-  setLightPower (valor) {
-    this.pointLight.power = valor;
+  setLightIntensity (valor) {
+    this.spotLight.intensity = valor;
   }
-
-  setAmbientIntensity (valor) {
-    this.ambientLight.intensity = valor;
-  }  
   
   setAxisVisible (valor) {
     this.axis.visible = valor;
@@ -211,9 +202,7 @@ class MyScene extends THREE.Scene {
 
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
-    
-    // Se actualiza el resto del modelo
-    this.model.update();
+
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
