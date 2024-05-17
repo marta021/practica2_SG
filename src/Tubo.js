@@ -19,15 +19,18 @@ class Tubo extends THREE.Object3D {
 
 
     var puntos = [
-        new THREE.Vector3(20, 0, 0),    
+      new THREE.Vector3(20, 0, 0),    
     
 
-    new THREE.Vector3(15, 10, 10),     
-    new THREE.Vector3(-5, -10, 10),    
-    new THREE.Vector3(-14, 5, 0),     
+      new THREE.Vector3(15, 10, -8),     
+      new THREE.Vector3(10, 12, -12),    
+      new THREE.Vector3(-14, 5, 0),     
+  
+      new THREE.Vector3(-20, -5, 10),    
+      new THREE.Vector3(20, 0, 20), 
 
-    new THREE.Vector3(-20, -5, 10),    
-    new THREE.Vector3(20, 0, 20), 
+ 
+
     ];
 
     var path = new THREE.CatmullRomCurve3(puntos, true);
@@ -40,6 +43,7 @@ class Tubo extends THREE.Object3D {
 
     var tubo = new THREE.Mesh(geomTubo,this.material);
     this.add(tubo);
+    this.scale.set(0.5, 0.5, 0.5);
 
   }
 
