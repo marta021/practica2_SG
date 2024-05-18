@@ -2,13 +2,16 @@
 // Clases de la biblioteca
 
 import * as THREE from '../../libs/three.module.js'
+import * as TWEEN from '../libs/tween.esm.js'
 import { GUI } from '../../libs/dat.gui.module.js'
 import { TrackballControls } from '../../libs/TrackballControls.js'
+
 
 // Clases de mi proyecto
 
 import { Tubo } from './Tubo.js'
 import { Modelo } from './Coche.js'
+
 
  
 /// La clase fachada del modelo
@@ -36,10 +39,7 @@ class MyScene extends THREE.Scene {
     
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
-    
-    // Un suelo 
-    //this.createGround ();
-    
+
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
    this.add (this.axis);
@@ -51,7 +51,18 @@ class MyScene extends THREE.Scene {
     this.tubo = new Tubo(this.gui, "Controles tubo");
     this.add(this.tubo);
     this.coche = new Modelo(this.gui, "Controles coche");
+    this.coche.scale.set(0.5, 0.5, 0.5);
     this.add(this.coche);
+
+
+    //---- VARIABLES DEL MOVIMIENTO ----//
+    this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
+    this.coche.animacion(); // Iniciamos la animacion del coche
+   // this.velocidad = 0.050;
+    
+    
+
+
 
   }
   
@@ -78,27 +89,7 @@ class MyScene extends THREE.Scene {
     // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
   }
-  
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (50,0.2,50);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
-    
-    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
-  }
+
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
@@ -197,6 +188,13 @@ class MyScene extends THREE.Scene {
   }
 
   update () {
+
+    // ACTUALIZACION DE LA VELOCIDAD 
+
+    // ACTUALIZACION DEL MOVIMIENTO
+    TWEEN.update();
+
+
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 
@@ -212,6 +210,31 @@ class MyScene extends THREE.Scene {
 }
 
 
+// // --- MOVIMIENTO CON LAS TECLAS --- //
+// onkeydown(event) {
+//   switch ( String.fromCharCode (event.which || event.key) ) {
+//     case 'A':
+//       this.movimiento[0] = true;
+//       break;
+//     case 'D':
+//       this.movimiento[1] = true;
+//       break;
+//   }
+// }
+
+// onKeyUp(event) {
+
+//   switch ( String.fromCharCode (event.which || event.key) ) {
+//     case 'A':
+//       this.movimiento[0] = false;
+//       break;
+//     case 'D':
+//       this.movimiento[1] = false;
+//       break;
+//   }
+
+// }
+
 /// La función   main
 $(function () {
   
@@ -220,6 +243,10 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
+
+  // //Listener para las teclas
+  // window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
+  // window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
   
   // Que no se nos olvide, la primera visualización.
   scene.update();

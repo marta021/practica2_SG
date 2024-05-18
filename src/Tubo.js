@@ -28,11 +28,10 @@ class Tubo extends THREE.Object3D {
   
       new THREE.Vector3(-20, -5, 10),    
       new THREE.Vector3(20, 0, 20), 
-
- 
-
     ];
 
+
+    
     var path = new THREE.CatmullRomCurve3(puntos, true);
 
     var resolucion= 200;
@@ -43,7 +42,7 @@ class Tubo extends THREE.Object3D {
 
     var tubo = new THREE.Mesh(geomTubo,this.material);
     this.add(tubo);
-    this.scale.set(0.5, 0.5, 0.5);
+    //this.scale.set(0.5, 0.5, 0.5);
 
   }
 
