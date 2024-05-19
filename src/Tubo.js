@@ -21,7 +21,6 @@ class Tubo extends THREE.Object3D {
     var puntos = [
       new THREE.Vector3(20, 0, 0),    
     
-
       new THREE.Vector3(15, 10, -8),     
       new THREE.Vector3(10, 12, -12),    
       new THREE.Vector3(-14, 5, 0),     
@@ -32,18 +31,25 @@ class Tubo extends THREE.Object3D {
 
 
     
-    var path = new THREE.CatmullRomCurve3(puntos, true);
+    this.path = new THREE.CatmullRomCurve3(puntos, true);
 
     var resolucion= 200;
-    var radio= 1;
+    this.radio= 1;
     var segmentos = 20;
 
-    var geomTubo = new THREE.TubeGeometry(path, resolucion, radio,segmentos,true);
+    var geomTubo = new THREE.TubeGeometry(this.path, resolucion, this.radio,segmentos,true);
 
     var tubo = new THREE.Mesh(geomTubo,this.material);
     this.add(tubo);
-    //this.scale.set(0.5, 0.5, 0.5);
 
+  }
+
+  getPath() {
+    return this.path;
+  }
+
+  getRadio(){
+    return this.radio;
   }
 
   createGUI(gui, titleGui) {

@@ -50,7 +50,7 @@ class MyScene extends THREE.Scene {
 
     this.tubo = new Tubo(this.gui, "Controles tubo");
     this.add(this.tubo);
-    this.coche = new Modelo(this.gui, "Controles coche");
+    this.coche = new Modelo(this.gui, "Controles coche", this.tubo);
     this.coche.scale.set(0.5, 0.5, 0.5);
     this.add(this.coche);
 
@@ -58,10 +58,6 @@ class MyScene extends THREE.Scene {
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
     this.coche.animacion(); // Iniciamos la animacion del coche
-   // this.velocidad = 0.050;
-    
-    
-
 
 
   }
@@ -207,33 +203,20 @@ class MyScene extends THREE.Scene {
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update())
   }
+
+  // // --- MOVIMIENTO CON LAS TECLAS --- //
+  onKeyDown(event) {
+    switch ( String.fromCharCode (event.which || event.key) ) {
+      case 'A':
+        this.coche.rotarCoche(-0.2); // Velocidad de rotación. Mayor número --> mayor velocidad
+        break;
+      case 'D':
+        this.coche.rotarCoche(0.2);
+        break;
+    }
+  }
 }
 
-
-// // --- MOVIMIENTO CON LAS TECLAS --- //
-// onkeydown(event) {
-//   switch ( String.fromCharCode (event.which || event.key) ) {
-//     case 'A':
-//       this.movimiento[0] = true;
-//       break;
-//     case 'D':
-//       this.movimiento[1] = true;
-//       break;
-//   }
-// }
-
-// onKeyUp(event) {
-
-//   switch ( String.fromCharCode (event.which || event.key) ) {
-//     case 'A':
-//       this.movimiento[0] = false;
-//       break;
-//     case 'D':
-//       this.movimiento[1] = false;
-//       break;
-//   }
-
-// }
 
 /// La función   main
 $(function () {
@@ -245,7 +228,7 @@ $(function () {
   window.addEventListener ("resize", () => scene.onWindowResize());
 
   // //Listener para las teclas
-  // window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
+  window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
   // window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
   
   // Que no se nos olvide, la primera visualización.
