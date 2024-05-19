@@ -72,7 +72,7 @@ class Modelo extends THREE.Object3D {
 
         var origen = {t: 0};
         var destino = {t: 1};
-        var velocidad = 5000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
+        var velocidad = 15000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
         // var altura = 1.5;
         var aumentar = false;
 

@@ -48,9 +48,15 @@ class Tubo extends THREE.Object3D {
 
     var resolucion= 200;
     this.radio= 1;
-    var segmentos = 20;
+    this.segmentos = 20;
 
-    var geomTubo = new THREE.TubeGeometry(this.path, resolucion, this.radio,segmentos,true);
+    var spline = this.path;
+
+       
+
+  
+    this.binormales = spline.computeFrenetFrames(this.segmentos, true ).binormals;
+    var geomTubo = new THREE.TubeGeometry(this.path, resolucion, this.radio,this.segmentos,true);
 
     var tubo = new THREE.Mesh(geomTubo,this.material);
     this.add(tubo);
@@ -58,12 +64,22 @@ class Tubo extends THREE.Object3D {
     //this.scale.set(0.5, 0.5, 0.5);
 
   }
+  
+  getPosicionTubo() {
+    return this.position;
+  }
   getPath() {
     return this.path;
+  }
+  getSegmentos() {
+    return this.segmentos;
   }
 
   getRadio(){
     return this.radio;
+  }
+  getBinormales(){
+    return this.binormales;
   }
   createGUI(gui, titleGui) {
     var folder = gui.addFolder(titleGui);

@@ -1,10 +1,10 @@
 import * as THREE from '../../libs/three.module.js'
 
 class Rayo extends THREE.Object3D { 
-    constructor(gui, titleGui) {        
+    constructor() {        
         super();
 
-        this.createGUI(gui, titleGui);
+        // this.createGUI(gui, titleGui);
 
         var rayoShape = this.crearShape();
 
@@ -17,12 +17,14 @@ class Rayo extends THREE.Object3D {
         this.rayo = new THREE.Mesh(rayoGeometry, rayoMaterial);
 
         this.add(this.rayo);
+        this.scale.set(0.2, 0.2, 0.2);
+
 
     }
 
-    createGUI(gui, titleGui) {
+    // createGUI(gui, titleGui) {
         
-    }
+    // }
 
     update() {
         //this.rotation.x += 0.01;

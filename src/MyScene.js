@@ -14,6 +14,12 @@ import { Modelo } from './Coche.js'
 import { Nube } from './Nube.js'
 import { Fantasma } from './Fantasma.js'
 import { Estrella } from './Estrella.js'
+import { Pincho } from './Pincho.js'
+import { Seta } from './Seta.js'
+import { Rayo } from './Rayo.js'
+
+
+
 
 //this.posUltObjVolador = new THREE.Vector3();
 
@@ -29,7 +35,9 @@ class MyScene extends THREE.Scene {
   constructor (myCanvas) { 
     super();
     
-    this.posUltObjVolador = new THREE.Vector3();
+
+    
+    // this.posUltObjVolador = new THREE.Vector3();
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
     
@@ -67,39 +75,99 @@ class MyScene extends THREE.Scene {
 
 	 //OBJETOS VOLADORES
     this.distanciaRecorrida=0;
-    this.distanciaObjetos=5;
     
 
 
+    this.objetos = [];
 
+        // Crear objetos inicialmente
+        this.crearObjetosSuelo();
 
   }
-objetoVoladorAleatorio(){
-    const tipo = Math.floor(Math.random()*3);
+  
+  crearObjetosSuelo(){
+     const numObjetos = 50; // Número de objetos a colocar alrededor del tubo
+    const distanciaMinima = 2; // Distancia mínima entre los objetos
 
-    switch (tipo){
-      case 0 :
-        return new Nube();
-      case 1:
-        return new Fantasma();
-      case 2:
-        return new Estrella();
+    const posiciones = []; // Array para almacenar las posiciones de los objetos ya colocados
+
+    for (let i = 0; i < numObjetos; i++) {
+        let posicionValida = false;
+        let puntoEnCurva;
+        
+        while (!posicionValida) {
+            const t = Math.random(); 
+            puntoEnCurva = this.tubo.path.getPointAt(t); 
+            
+            
+            posicionValida = true;
+            for (const pos of posiciones) {
+                const distancia = puntoEnCurva.distanceTo(pos);
+                if (distancia < distanciaMinima) {
+                    posicionValida = false;
+                    break;
+                }
+            }
+        }
+
+        
+        const x = puntoEnCurva.x;
+        const y = puntoEnCurva.y;
+        const z = puntoEnCurva.z;
+
+        
+        const objeto = this.objetoAleatorio();
+        objeto.position.set(x, y, z);
+        objeto.position.y += this.tubo.getRadio()*1.5;
+        this.add(objeto);
+        objeto.rotation.z=-275;
+
+        
+        posiciones.push(puntoEnCurva);
     }
-  }
-  colocarObjetosVoladores(){
-    const direcCoche= this.coche.getWorldDirection(new THREE.Vector3());
-    const posicionCoche=this.coche.getCarPosicion();
 
-    const posObjVolador= posicionCoche.clone().add(direcCoche.clone().multiplyScalar(10)).add(new THREE.Vector3(0, 5, 0));
-    const distanciaUltObjVolador= posicionCoche.distanceTo(this.posUltObjVolador);
+  }
+  objetoAleatorio() {
     
-    if(distanciaUltObjVolador >=15){
-      const objetoVolador= this.objetoVoladorAleatorio();
-      objetoVolador.position.copy(posObjVolador);
-      this.add(objetoVolador);
-      this.posUltObjVolador= posicionCoche.clone();
+    const tipo = Math.floor(Math.random() * 3); 
+    switch (tipo) {
+        case 0:
+            return new Pincho();
+        case 1:
+            return new Seta();
+        case 2:
+            return new Rayo();
+        
     }
-  }
+}
+// objetoVoladorAleatorio(){
+//     const tipo = Math.floor(Math.random()*3);
+
+//     switch (tipo){
+//       case 0 :
+//         return new Nube();
+//       case 1:
+//         return new Fantasma();
+//       case 2:
+//         return new Estrella();
+//     }
+//   }
+//   colocarObjetosVoladores(){
+//     const altura = 2;
+//     const direcCoche= this.coche.getWorldDirection(new THREE.Vector3());
+//     const posicionCoche=this.coche.getCarPosicion();
+
+//     const posObjVolador= posicionCoche.clone().add(direcCoche.clone().multiplyScalar(5)).add(new THREE.Vector3(0, altura, 0));
+//     const distanciaUltObjVolador= posicionCoche.distanceTo(this.posUltObjVolador);
+    
+//     if(distanciaUltObjVolador >=10){
+//       const objetoVolador= this.objetoVoladorAleatorio();
+//       objetoVolador.position.copy(posObjVolador);
+//       this.add(objetoVolador);
+      
+//       this.posUltObjVolador= posicionCoche.clone();
+//     }
+//   }
   createCamera () {
     // Para crear una cámara le indicamos
     //   El ángulo del campo de visión vértical en grados sexagesimales
@@ -241,17 +309,18 @@ objetoVoladorAleatorio(){
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
     
-      // MANEJAR OBJETOS VOLADORES 
-     this.coche.update();
-     this.colocarObjetosVoladores();
+    //   // MANEJAR OBJETOS VOLADORES 
+    //  this.coche.update();
+    //  this.colocarObjetosVoladores();
      
 
-     this.children.forEach(child => {
-      if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
-          child.update();
-      }
-  });
-    
+    //  this.children.forEach(child => {
+    //   if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
+    //       child.update();
+    //   }
+  // });
+
+  
   }
   // // --- MOVIMIENTO CON LAS TECLAS --- //
   onKeyDown(event) {

@@ -1,15 +1,17 @@
 import * as THREE from '../../libs/three.module.js'
 
 class Seta extends THREE.Object3D {
-    constructor(gui, titleGui) {
+    constructor() {
         super();
 
         // Se crea la parte de la interfaz que corresponde a la GeometriaBasica
         // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-        this.createGUI(gui, titleGui);
+        // this.createGUI(gui, titleGui);
 
         var seta = this.createSeta();
         this.add(seta);
+        this.scale.set(0.2, 0.2, 0.2);
+
     }
 
     createSeta() {
@@ -54,20 +56,20 @@ class Seta extends THREE.Object3D {
     }
 
 
-    createGUI(gui, titleGui) {
-        // // Controles para el movimiento 
-        this.guiControls = {
-            rotar:true
-        }
+    // createGUI(gui, titleGui) {
+    //     // // Controles para el movimiento 
+    //     this.guiControls = {
+    //         rotar:true
+    //     }
 
-        // // Se crea una sección para los controles del Seta
-         var folder = gui.addFolder(titleGui);
-        // // Estas lineas son las que añaden los componentes de la interfaz
-        // // Las tres cifras indican un valor mínimo, un máximo y el incremento
-         folder.add(this.guiControls, 'rotar', true).name('Rotación : ').listen();
+    //     // // Se crea una sección para los controles del Seta
+    //      var folder = gui.addFolder(titleGui);
+    //     // // Estas lineas son las que añaden los componentes de la interfaz
+    //     // // Las tres cifras indican un valor mínimo, un máximo y el incremento
+    //      folder.add(this.guiControls, 'rotar', true).name('Rotación : ').listen();
 
 
-    }
+    // }
 
 
     update() {

@@ -2,10 +2,10 @@ import * as THREE from '../../libs/three.module.js'
 import { CSG } from '../../libs/CSG-v2.js'
 
 class Pincho extends THREE.Object3D {
-    constructor(gui, titleGui) {
+    constructor() {
         super();
 
-        this.createGUI(gui, titleGui);
+        // this.createGUI(gui, titleGui);
 
         var material = new THREE.MeshNormalMaterial;
 
@@ -46,20 +46,22 @@ class Pincho extends THREE.Object3D {
         var resultado = csg.toMesh();
 
         this.add(resultado);
+        this.scale.set(0.2, 0.2, 0.2);
+
 
     }
 
-    createGUI(gui, titleGui) {
-        // Controles para el movimiento de la parte móvil
-        this.guiControls = {
-            rotar: true
-        }
+    // createGUI(gui, titleGui) {
+    //     // Controles para el movimiento de la parte móvil
+    //     this.guiControls = {
+    //         rotar: true
+    //     }
 
-        // Se crea una sección para los controles del Cilindro
-        var folder = gui.addFolder(titleGui);
-        // Estas lineas son las que añaden los componentes de la interfaz
-        folder.add(this.guiControls, 'rotar', 0.5, 5.0, 0.1).name('Rotacion: ').listen();
-    }
+    //     // Se crea una sección para los controles del Cilindro
+    //     var folder = gui.addFolder(titleGui);
+    //     // Estas lineas son las que añaden los componentes de la interfaz
+    //     folder.add(this.guiControls, 'rotar', 0.5, 5.0, 0.1).name('Rotacion: ').listen();
+    // }
 
     update() {
         if (this.guiControls.rotar) {
