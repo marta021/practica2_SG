@@ -2,12 +2,10 @@ import * as THREE from 'three'
 import { CSG } from '../libs/CSG-v2.js'
 
 class Fantasma extends THREE.Object3D {
-  constructor(gui, titleGui) {
+  constructor() {
     super();
 
-    // Se crea la parte de la interfaz que corresponde a la grapadora
-    // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui, titleGui);
+  
 
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
     // Material para la figura
@@ -75,16 +73,19 @@ fantasmaCSG =fantasmaCSG.union([esfMesh,esfMesh2,esfMesh3,esfMesh4]);
 
 var fantasmita = new THREE.Mesh(fantasmaCSG.toGeometry(),this.material);
   this.add(fantasmita);
+  this.scale.set(0.2, 0.2, 0.2);
 
-
+  this.circularRadius = 3;
+  this.angularSpeed = 0.02;
+  this.angle=0;
   }
 
-  createGUI(gui, titleGui) {
-    var folder = gui.addFolder(titleGui);
-  }
+
 
   update() {
-    // No hay nada que actualizar figura estática
+    this.position.x = this.circularRadius * Math.cos(this.angle);
+        this.position.z = this.circularRadius * Math.sin(this.angle);
+        this.angle += this.angularSpeed;
   }
 }
 

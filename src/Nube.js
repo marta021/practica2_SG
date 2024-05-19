@@ -2,12 +2,13 @@ import * as THREE from 'three'
 import { CSG } from '../libs/CSG-v2.js'
 
 class Nube extends THREE.Object3D {
-  constructor(gui, titleGui) {
+  constructor() {
     super();
 
+      this.rotationalSpeed =  0.01;
     // Se crea la parte de la interfaz que corresponde a la grapadora
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui, titleGui);
+    
 
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
     // Material para la figura
@@ -84,14 +85,14 @@ class Nube extends THREE.Object3D {
 
   var nube= new THREE.Mesh(figBaseGeometry, this.material);
   this.add(nube);
+  this.scale.set(0.1, 0.1, 0.1);
+
   }
 
-  createGUI(gui, titleGui) {
-    var folder = gui.addFolder(titleGui);
-  }
+ 
 
   update() {
-    // No hay nada que actualizar figura estática
+    this.rotation.y += this.rotationalSpeed;
   }
 }
 

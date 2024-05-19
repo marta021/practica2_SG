@@ -11,20 +11,25 @@ import { TrackballControls } from '../../libs/TrackballControls.js'
 
 import { Tubo } from './Tubo.js'
 import { Modelo } from './Coche.js'
+import { Nube } from './Nube.js'
+import { Fantasma } from './Fantasma.js'
+import { Estrella } from './Estrella.js'
+
+//this.posUltObjVolador = new THREE.Vector3();
 
 
- 
+
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
  */
-
 class MyScene extends THREE.Scene {
   // Recibe el  div  que se ha creado en el  html  que va a ser el lienzo en el que mostrar
   // la visualización de la escena
   constructor (myCanvas) { 
     super();
     
+    this.posUltObjVolador = new THREE.Vector3();
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
     
@@ -36,21 +41,21 @@ class MyScene extends THREE.Scene {
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
     this.createLights ();
-    
+
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
+
+   
 
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
    this.add (this.axis);
-
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-
     this.tubo = new Tubo(this.gui, "Controles tubo");
     this.add(this.tubo);
-    this.coche = new Modelo(this.gui, "Controles coche", this.tubo);
+    this.coche = new Modelo(this.gui, "Controles coche",this.tubo);
     this.coche.scale.set(0.5, 0.5, 0.5);
     this.add(this.coche);
 
@@ -58,10 +63,43 @@ class MyScene extends THREE.Scene {
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
     this.coche.animacion(); // Iniciamos la animacion del coche
+   // this.velocidad = 0.050;
+
+	 //OBJETOS VOLADORES
+    this.distanciaRecorrida=0;
+    this.distanciaObjetos=5;
+    
+
+
 
 
   }
-  
+objetoVoladorAleatorio(){
+    const tipo = Math.floor(Math.random()*3);
+
+    switch (tipo){
+      case 0 :
+        return new Nube();
+      case 1:
+        return new Fantasma();
+      case 2:
+        return new Estrella();
+    }
+  }
+  colocarObjetosVoladores(){
+    const direcCoche= this.coche.getWorldDirection(new THREE.Vector3());
+    const posicionCoche=this.coche.getCarPosicion();
+
+    const posObjVolador= posicionCoche.clone().add(direcCoche.clone().multiplyScalar(10)).add(new THREE.Vector3(0, 5, 0));
+    const distanciaUltObjVolador= posicionCoche.distanceTo(this.posUltObjVolador);
+    
+    if(distanciaUltObjVolador >=15){
+      const objetoVolador= this.objetoVoladorAleatorio();
+      objetoVolador.position.copy(posObjVolador);
+      this.add(objetoVolador);
+      this.posUltObjVolador= posicionCoche.clone();
+    }
+  }
   createCamera () {
     // Para crear una cámara le indicamos
     //   El ángulo del campo de visión vértical en grados sexagesimales
@@ -87,6 +125,8 @@ class MyScene extends THREE.Scene {
   }
 
   
+
+
   createGUI () {
     // Se crea la interfaz gráfica de usuario
     var gui = new GUI();
@@ -99,7 +139,6 @@ class MyScene extends THREE.Scene {
       lightIntensity : 0.5,
       axisOnOff : true
     }
-
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder ('Luz y Ejes');
     
@@ -196,14 +235,24 @@ class MyScene extends THREE.Scene {
 
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
-
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
-    requestAnimationFrame(() => this.update())
-  }
+    requestAnimationFrame(() => this.update());
+    
+      // MANEJAR OBJETOS VOLADORES 
+     this.coche.update();
+     this.colocarObjetosVoladores();
+     
 
+     this.children.forEach(child => {
+      if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
+          child.update();
+      }
+  });
+    
+  }
   // // --- MOVIMIENTO CON LAS TECLAS --- //
   onKeyDown(event) {
     switch ( String.fromCharCode (event.which || event.key) ) {
@@ -218,9 +267,34 @@ class MyScene extends THREE.Scene {
 }
 
 
+// // --- MOVIMIENTO CON LAS TECLAS --- //
+// onkeydown(event) {
+//   switch ( String.fromCharCode (event.which || event.key) ) {
+//     case 'A':
+//       this.movimiento[0] = true;
+//       break;
+//     case 'D':
+//       this.movimiento[1] = true;
+//       break;
+//   }
+// }
+
+// onKeyUp(event) {
+
+//   switch ( String.fromCharCode (event.which || event.key) ) {
+//     case 'A':
+//       this.movimiento[0] = false;
+//       break;
+//     case 'D':
+//       this.movimiento[1] = false;
+//       break;
+//   }
+
+// }
+
 /// La función   main
 $(function () {
-  
+
   // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
   var scene = new MyScene("#WebGL-output");
 
@@ -228,9 +302,9 @@ $(function () {
   window.addEventListener ("resize", () => scene.onWindowResize());
 
   // //Listener para las teclas
-  window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
+   window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
   // window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
-  
+
   // Que no se nos olvide, la primera visualización.
   scene.update();
 });
