@@ -121,8 +121,9 @@ class MyScene extends THREE.Scene {
         const objeto = this.objetoAleatorio();
         objeto.position.set(x, y, z);
         objeto.position.y += (Math.round(Math.random()) * 2 - 1) * 1.5;
+        objeto.rotateZ= (Math.PI/2)
         this.add(objeto);
-        //objeto.rotation.z=-275;
+       
 
         
         posiciones.push(puntoEnCurva);
