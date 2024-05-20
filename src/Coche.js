@@ -22,8 +22,8 @@ class Modelo extends THREE.Object3D {
             objectLoader.load('../modelos/Porsche_911_GT2.obj',
                 (object) => {
                     object.rotateY(Math.PI); // Orientación del coche
-                    //object.position.set(0, 1.5 + tubo.getRadio(), 0); // Posición inicial del coche
                     object.position.y += 0.605885; // Posición inicial del coche teniendo en cuenta la altura mínima de su vértice
+                    object.name = "coche_basico";
                     this.coche_nivelIntermedio.add(object);
                 }, null, null);
         });
@@ -40,19 +40,10 @@ class Modelo extends THREE.Object3D {
     }
 
     createGUI(gui, titleGui) {
-        // Controles para el movimiento de la parte móvil
-        this.guiControls = {
-            rotar: true
-        }
-        // Se crea una sección para los controles del Cilindro
-        var folder = gui.addFolder(titleGui);
-        // Estas lineas son las que añaden los componentes de la interfaz
-        folder.add(this.guiControls, 'rotar', 0.5, 5.0, 0.1).name('Rotacion: ').listen();
+
     }
     update() {
-        // if (this.guiControls.rotar) {
-        //     this.rotation.y += 0.01;
-        // }
+
     }
 
 // --- ANIMACION DEL COCHE (movimiento) ---//
@@ -63,45 +54,57 @@ class Modelo extends THREE.Object3D {
         //Mismos puntos que el tubo
       
 
-        var spline = this.path;
+        this.spline = this.path;
 
         //---Definicion de la animacion---//
 
         this.segmentos = 100;
-        this.binormales = spline.computeFrenetFrames(this.segmentos, true ).binormals;
+        this.binormales = this.spline.computeFrenetFrames(this.segmentos, true ).binormals;
 
         var origen = {t: 0};
         var destino = {t: 1};
-        var velocidad = 15000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
-        // var altura = 1.5;
+        this.velocidad = 30000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
         var aumentar = false;
 
-        var animacion = new TWEEN.Tween(origen).to(destino, velocidad)
+        this.animacion = new TWEEN.Tween(origen).to(destino, this.velocidad)
             .onUpdate(() => {
                 // Se actualiza la posición de la cámara siguiendo la curva
-                var posicion = spline.getPointAt(origen.t);
-                // posicion.y += altura; // Para que el coche circule por encima del tubo
+                var posicion = this.spline.getPointAt(origen.t);
                 this.position.copy(posicion);
                 // Se actualiza la orientación de la cámara mirando al "lookAt" de la curva
-                var tangente = spline.getTangentAt(origen.t);
+                var tangente = this.spline.getTangentAt(origen.t);
                 posicion.add(tangente);
                 this.up = this.binormales[Math.floor(origen.t * this.segmentos)];
                 this.lookAt(posicion);
             })
             .onRepeat(() => { // Se aumenta la velocidad del coche un 10% en cada repetición / vuelta
-                velocidad *= 0.9;
-                // animacion.to(destino, velocidad);
-
+                let velocidad_factor = 0.9;
+                this.setVelocidad(velocidad_factor);
             })
             .repeat(Infinity)
             .start();
 
-            return animacion;
+            return this.animacion;
     }
+
+    setVelocidad(velocidad) {
+        this.velocidad = this.getVelocidad() * velocidad;
+        this.animacion.duration(this.getVelocidad());
+    }
+    
+
+    getVelocidad(){
+        return this.velocidad;
+    }
+
+
     getCarPosicion() {
         return this.position.clone();
     }
 
+    getAnimacion(){
+        return this.animacion;
+    }
 }
 
 export { Modelo}

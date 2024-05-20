@@ -32,7 +32,7 @@ class Seta extends THREE.Object3D {
      
         this.position.y+=1.5;
         
-       
+        this.name = 'seta';
     }
     
     createSeta() {

@@ -36,7 +36,7 @@ class MyScene extends THREE.Scene {
     super();
     
 
-    
+
     // this.posUltObjVolador = new THREE.Vector3();
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
@@ -62,31 +62,31 @@ class MyScene extends THREE.Scene {
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
     this.tubo = new Tubo(this.gui, "Controles tubo");
+    this.tubo.name = "Tubo";
     this.add(this.tubo);
     this.coche = new Modelo(this.gui, "Controles coche",this.tubo);
     this.coche.scale.set(0.5, 0.5, 0.5);
     this.add(this.coche);
-
-   
-
 
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
     this.coche.animacion(); // Iniciamos la animacion del coche
    // this.velocidad = 0.050;
 
-	 //OBJETOS VOLADORES
+	 // --- OBJETOS VOLADORES --- //
     this.distanciaRecorrida=0;
     
+    // --- COLISIONES ---- //
+    this.raycaster = new THREE.Raycaster();
+    this.obstaculos = new THREE.Object3D();
 
+    // Crear objetos inicialmente
+    this.crearObjetosSuelo();
+    // console.log(this.obstaculos);
 
-    this.objetos = [];
-
-        // Crear objetos inicialmente
-         this.crearObjetosSuelo();
-
+    this.add(this.obstaculos);
   }
-  
+
   crearObjetosSuelo(){
     const numObjetos = 30; // Número de objetos a colocar alrededor del tubo
     const distanciaMinima = 5; // Distancia mínima entre los objetos
@@ -96,12 +96,12 @@ class MyScene extends THREE.Scene {
     for (let i = 0; i < numObjetos; i++) {
         let posicionValida = false;
         let puntoEnCurva;
-        
+
         while (!posicionValida) {
-            const t = Math.random(); 
-            puntoEnCurva = this.tubo.path.getPointAt(t); 
-            
-            
+            const t = Math.random();
+            puntoEnCurva = this.tubo.path.getPointAt(t);
+
+
             posicionValida = true;
             for (const pos of posiciones) {
                 const distancia = puntoEnCurva.distanceTo(pos);
@@ -112,26 +112,28 @@ class MyScene extends THREE.Scene {
             }
         }
 
-        
+
         const x = puntoEnCurva.x;
         const y = puntoEnCurva.y;
         const z = puntoEnCurva.z ;
 
-        
+
         const objeto = this.objetoAleatorio();
         objeto.position.set(x, y, z);
         objeto.position.y += (Math.round(Math.random()) * 2 - 1) * 1.5;
-        objeto.rotateZ= (Math.PI/2)
-        this.add(objeto);
-       
+        objeto.rotateZ= (Math.PI/2);
+        //var objeto_obs = new THREE.Object3D();
+        // objeto_obs = objeto;
+        this.obstaculos.add(objeto);
+        // this.add(objeto);
 
-        
         posiciones.push(puntoEnCurva);
     }
   }
+
   objetoAleatorio() {
-    
-    const tipo = Math.floor(Math.random() * 3); 
+
+    const tipo = Math.floor(Math.random() * 3);
     switch (tipo) {
         case 0:
             return new Pincho(this.tubo);
@@ -139,7 +141,7 @@ class MyScene extends THREE.Scene {
             return new Seta(this.tubo);
         case 2:
             return new Rayo(this.tubo);
-        
+
     }
 }
 // objetoVoladorAleatorio(){
@@ -166,7 +168,7 @@ class MyScene extends THREE.Scene {
 //       const objetoVolador= this.objetoVoladorAleatorio();
 //       objetoVolador.position.copy(posObjVolador);
 //       this.add(objetoVolador);
-      
+
 //       this.posUltObjVolador= posicionCoche.clone();
 //     }
 //   }
@@ -294,9 +296,7 @@ class MyScene extends THREE.Scene {
 
   update () {
 
-    // ACTUALIZACION DE LA VELOCIDAD 
-
-    // ACTUALIZACION DEL MOVIMIENTO
+    // ACTUALIZACION DEL MOVIMIENTO del coche
     TWEEN.update();
 
 
@@ -311,7 +311,7 @@ class MyScene extends THREE.Scene {
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
     
-    //   // MANEJAR OBJETOS VOLADORES 
+    //   // MANEJAR OBJETOS VOLADORES
     //  this.coche.update();
     //  this.colocarObjetosVoladores();
      
@@ -322,7 +322,13 @@ class MyScene extends THREE.Scene {
     //   }
   // });
 
-  
+
+
+      //COMPROBACION DE COLISIONES
+      var posicion_coche = this.getObjectByName("coche_basico").getWorldPosition(new THREE.Vector3());
+      var direccion_coche = this.coche.getWorldDirection(new THREE.Vector3());
+      this.testColision(posicion_coche,direccion_coche);
+
   }
   // // --- MOVIMIENTO CON LAS TECLAS --- //
   onKeyDown(event) {
@@ -335,33 +341,36 @@ class MyScene extends THREE.Scene {
         break;
     }
   }
+
+  // --- COLSIONES  --- //
+  testColision(posicion, direccion) {
+    direccion = direccion.normalize();
+    this.raycaster.set(posicion, direccion);
+    this.colisiones = this.raycaster.intersectObjects(this.obstaculos.children, true); //true para que se haga la intersección con los hijos de los hijos
+                                                                             // Vector de intersectados
+    
+    // console.log(this.colisiones[0].distance);
+    if (this.colisiones.length > 0 && this.colisiones[0].distance < 0.3 ) {
+      switch (this.colisiones[0].object.parent.name) {
+        case 'pincho':
+          this.coche.setVelocidad(1.5);
+          console.log('Colision pincho');
+          break;
+
+        case 'seta':
+          this.coche.setVelocidad(0.2);
+          console.log("Colision seta");
+          break;
+
+        case 'rayo':
+          this.coche.setVelocidad(0.02);
+          console.log("Colision rayo");
+          break;
+      }
+    }
+    // return false;
+  }
 }
-
-
-// // --- MOVIMIENTO CON LAS TECLAS --- //
-// onkeydown(event) {
-//   switch ( String.fromCharCode (event.which || event.key) ) {
-//     case 'A':
-//       this.movimiento[0] = true;
-//       break;
-//     case 'D':
-//       this.movimiento[1] = true;
-//       break;
-//   }
-// }
-
-// onKeyUp(event) {
-
-//   switch ( String.fromCharCode (event.which || event.key) ) {
-//     case 'A':
-//       this.movimiento[0] = false;
-//       break;
-//     case 'D':
-//       this.movimiento[1] = false;
-//       break;
-//   }
-
-// }
 
 /// La función   main
 $(function () {
@@ -374,7 +383,6 @@ $(function () {
 
   // //Listener para las teclas
    window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
-  // window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
 
   // Que no se nos olvide, la primera visualización.
   scene.update();

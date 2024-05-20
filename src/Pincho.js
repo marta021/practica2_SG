@@ -6,7 +6,6 @@ class Pincho extends THREE.Object3D {
         super();
         this.path=tubo.getPath();
         // this.createGUI(gui, titleGui);
-
         var material = new THREE.MeshNormalMaterial;
 
 
@@ -59,8 +58,8 @@ class Pincho extends THREE.Object3D {
         this.lookAt(posPincho.clone().add(tangente));
 
         this.position.y+=2* tubo.getRadio();
-        
 
+        this.name = 'pincho';
     }
 
     // createGUI(gui, titleGui) {
@@ -81,9 +80,6 @@ class Pincho extends THREE.Object3D {
     //         this.rotation.y += 0.01;
     //     }
     }
-
-  
-
 }
 
 export { Pincho }
