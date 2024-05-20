@@ -1,19 +1,40 @@
 import * as THREE from '../../libs/three.module.js'
 
 class Seta extends THREE.Object3D {
-    constructor() {
+    constructor(tubo) {
         super();
 
-        // Se crea la parte de la interfaz que corresponde a la GeometriaBasica
-        // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-        // this.createGUI(gui, titleGui);
+        this.path = tubo.getPath();
 
+        const anguloZ = Math.random() * 360;
+        this.rotation.z += Math.PI/2;
         var seta = this.createSeta();
+        
         this.add(seta);
-        this.scale.set(0.2, 0.2, 0.2);
+        this.scale.set(0.1, 0.1, 0.1);
 
+
+        // Escoge un valor aleatorio de 't' entre 0 y 1 para la posición de la seta en el tubo
+        const tSeta = Math.random();
+
+        // Obtiene la posición y la tangente en el punto correspondiente a 'tSeta' en el tubo
+        const posSeta = this.path.getPointAt(tSeta);
+        this.position.copy(posSeta);
+
+        const tangenteSeta = this.path.getTangentAt(tSeta).normalize();
+        
+        posSeta.add(tangenteSeta);
+        // Calcula la posición y la orientación de la seta en el tubo
+       
+
+        this.lookAt(posSeta.clone().add(tangenteSeta));
+
+     
+        this.position.y+=1.5;
+        
+       
     }
-
+    
     createSeta() {
 
          this.setPuntos();
@@ -73,9 +94,20 @@ class Seta extends THREE.Object3D {
 
 
     update() {
-        if (this.guiControls.rotar) {
-            this.rotation.y += 0.01;
-        }
+    //     if (this.guiControls.rotar) {
+    //         this.rotation.y += 0.01;
+    //     }
+     }
+     getNormalAtPoint(curve, t) {
+        const point = curve.getPointAt(t);
+        const tan = curve.getTangentAt(t).normalize();
+        const axis = new THREE.Vector3(0, 0, 1); // Vector que representa el eje z
+
+        // Calcular el vector normal como el producto cruz entre el tangente y el eje z
+        const normal = new THREE.Vector3();
+        normal.crossVectors(tan, axis).normalize();
+
+        return normal;
     }
 }
 

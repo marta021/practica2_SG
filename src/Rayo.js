@@ -1,9 +1,10 @@
 import * as THREE from '../../libs/three.module.js'
 
 class Rayo extends THREE.Object3D { 
-    constructor() {        
+    constructor(tubo) {        
         super();
 
+        this.path = tubo.getPath();
         // this.createGUI(gui, titleGui);
 
         var rayoShape = this.crearShape();
@@ -17,8 +18,19 @@ class Rayo extends THREE.Object3D {
         this.rayo = new THREE.Mesh(rayoGeometry, rayoMaterial);
 
         this.add(this.rayo);
-        this.scale.set(0.2, 0.2, 0.2);
+        this.scale.set(0.1, 0.1, 0.1);
 
+        const tRayo = Math.random();
+
+        // Obtiene la posición y la tangente en el punto correspondiente a 'tSeta' en el tubo
+        const posRayo = this.path.getPointAt(tRayo);
+        const tangenteRayo = this.path.getTangentAt(tRayo).normalize();
+
+        // Calcula la posición y la orientación de la seta en el tubo
+        this.position.copy(posRayo);
+        this.lookAt(posRayo.clone().add(tangenteRayo));
+
+        this.position.y+= 1.5* tubo.getRadio();
 
     }
 

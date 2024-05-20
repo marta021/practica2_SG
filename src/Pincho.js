@@ -2,9 +2,9 @@ import * as THREE from '../../libs/three.module.js'
 import { CSG } from '../../libs/CSG-v2.js'
 
 class Pincho extends THREE.Object3D {
-    constructor() {
+    constructor(tubo) {
         super();
-
+        this.path=tubo.getPath();
         // this.createGUI(gui, titleGui);
 
         var material = new THREE.MeshNormalMaterial;
@@ -46,8 +46,20 @@ class Pincho extends THREE.Object3D {
         var resultado = csg.toMesh();
 
         this.add(resultado);
-        this.scale.set(0.2, 0.2, 0.2);
+        this.scale.set(0.1, 0.1, 0.1);
 
+        const tPincho = Math.random();
+
+        // Obtiene la posición y la tangente en el punto correspondiente a 'tSeta' en el tubo
+        const posPincho = this.path.getPointAt(tPincho);
+        const tangente = this.path.getTangentAt(tPincho).normalize();
+
+        // Calcula la posición y la orientación de la seta en el tubo
+        this.position.copy(posPincho);
+        this.lookAt(posPincho.clone().add(tangente));
+
+        this.position.y+=2* tubo.getRadio();
+        
 
     }
 
@@ -64,11 +76,14 @@ class Pincho extends THREE.Object3D {
     // }
 
     update() {
-        if (this.guiControls.rotar) {
-            this.rotation.z += 0.01;
-            this.rotation.y += 0.01;
-        }
+    //     if (this.guiControls.rotar) {
+    //         this.rotation.z += 0.01;
+    //         this.rotation.y += 0.01;
+    //     }
     }
+
+  
+
 }
 
 export { Pincho }
