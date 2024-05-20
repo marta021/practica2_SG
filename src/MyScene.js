@@ -67,6 +67,8 @@ class MyScene extends THREE.Scene {
     this.coche.scale.set(0.5, 0.5, 0.5);
     this.add(this.coche);
 
+   
+
 
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
@@ -81,13 +83,13 @@ class MyScene extends THREE.Scene {
     this.objetos = [];
 
         // Crear objetos inicialmente
-        this.crearObjetosSuelo();
+         this.crearObjetosSuelo();
 
   }
   
   crearObjetosSuelo(){
-     const numObjetos = 50; // Número de objetos a colocar alrededor del tubo
-    const distanciaMinima = 2; // Distancia mínima entre los objetos
+    const numObjetos = 30; // Número de objetos a colocar alrededor del tubo
+    const distanciaMinima = 5; // Distancia mínima entre los objetos
 
     const posiciones = []; // Array para almacenar las posiciones de los objetos ya colocados
 
@@ -113,30 +115,29 @@ class MyScene extends THREE.Scene {
         
         const x = puntoEnCurva.x;
         const y = puntoEnCurva.y;
-        const z = puntoEnCurva.z;
+        const z = puntoEnCurva.z ;
 
         
         const objeto = this.objetoAleatorio();
         objeto.position.set(x, y, z);
-        objeto.position.y += this.tubo.getRadio()*1.5;
+        objeto.position.y += (Math.round(Math.random()) * 2 - 1) * 1.5;
         this.add(objeto);
-        objeto.rotation.z=-275;
+        //objeto.rotation.z=-275;
 
         
         posiciones.push(puntoEnCurva);
     }
-
   }
   objetoAleatorio() {
     
     const tipo = Math.floor(Math.random() * 3); 
     switch (tipo) {
         case 0:
-            return new Pincho();
+            return new Pincho(this.tubo);
         case 1:
-            return new Seta();
+            return new Seta(this.tubo);
         case 2:
-            return new Rayo();
+            return new Rayo(this.tubo);
         
     }
 }
