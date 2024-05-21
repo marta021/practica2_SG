@@ -83,6 +83,8 @@ class MyScene extends THREE.Scene {
     // Crear objetos inicialmente
     this.crearObjetosSuelo();
     // console.log(this.obstaculos);
+    this.colocarObjetosVoladores();
+
 
     this.add(this.obstaculos);
   }
@@ -144,34 +146,66 @@ class MyScene extends THREE.Scene {
 
     }
 }
-// objetoVoladorAleatorio(){
-//     const tipo = Math.floor(Math.random()*3);
+objetoVoladorAleatorio(){
+    const tipo = Math.floor(Math.random()*3);
 
-//     switch (tipo){
-//       case 0 :
-//         return new Nube();
-//       case 1:
-//         return new Fantasma();
-//       case 2:
-//         return new Estrella();
-//     }
-//   }
-//   colocarObjetosVoladores(){
-//     const altura = 2;
-//     const direcCoche= this.coche.getWorldDirection(new THREE.Vector3());
-//     const posicionCoche=this.coche.getCarPosicion();
+    switch (tipo){
+      case 0 :
+        return new Nube();
+      case 1:
+        return new Fantasma();
+      case 2:
+        return new Estrella();
+    }
+  }
+  colocarObjetosVoladores(){
+    const numObjetos = 20; // Número de objetos a colocar alrededor del tubo
+    const distanciaMinima = 5; // Distancia mínima entre los objetos
 
-//     const posObjVolador= posicionCoche.clone().add(direcCoche.clone().multiplyScalar(5)).add(new THREE.Vector3(0, altura, 0));
-//     const distanciaUltObjVolador= posicionCoche.distanceTo(this.posUltObjVolador);
-    
-//     if(distanciaUltObjVolador >=10){
-//       const objetoVolador= this.objetoVoladorAleatorio();
-//       objetoVolador.position.copy(posObjVolador);
-//       this.add(objetoVolador);
+    const posiciones = []; // Array para almacenar las posiciones de los objetos ya colocados
 
-//       this.posUltObjVolador= posicionCoche.clone();
-//     }
-//   }
+    for (let i = 0; i < numObjetos; i++) {
+        let posicionValida = false;
+        let puntoEnCurva;
+        let t;
+        let tangente;
+        
+        while (!posicionValida) {
+            t = Math.random(); 
+            puntoEnCurva = this.tubo.path.getPointAt(t); 
+            tangente= this.tubo.getPath().getTangentAt(t).normalize();
+            
+            posicionValida = true;
+            for (const pos of posiciones) {
+                const distancia = puntoEnCurva.distanceTo(pos);
+                if (distancia < distanciaMinima) {
+                    posicionValida = false;
+                    break;
+                }
+            }
+        }
+
+        
+        const x = puntoEnCurva.x;
+        const y = puntoEnCurva.y;
+        const z = puntoEnCurva.z ;
+
+        
+        const objeto = this.objetoVoladorAleatorio();
+        objeto.position.set(x, y, z);
+        objeto.position.y += 4;
+
+        // this.objetosVoladores.push(objeto);
+       //objeto.rotateOnAxis(tangente,( Math.random() * Math.PI * 2) );
+       //objeto.rotateZ= (Math.PI/2);
+        
+        this.add(objeto);
+       
+
+        
+        posiciones.push(puntoEnCurva);
+    }
+  }
   createCamera () {
     // Para crear una cámara le indicamos
     //   El ángulo del campo de visión vértical en grados sexagesimales
@@ -311,16 +345,17 @@ class MyScene extends THREE.Scene {
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
     
-    //   // MANEJAR OBJETOS VOLADORES
-    //  this.coche.update();
+     
+    //   // MANEJAR OBJETOS VOLADORES 
+     this.coche.update();
     //  this.colocarObjetosVoladores();
      
 
-    //  this.children.forEach(child => {
-    //   if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
-    //       child.update();
-    //   }
-  // });
+     this.children.forEach(child => {
+      if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
+          child.update();
+      }
+  });
 
 
 
@@ -368,12 +403,12 @@ class MyScene extends THREE.Scene {
           break;
 
         case 'seta':
-          this.coche.setVelocidad(0.2);
+          this.coche.setVelocidad(0.8);
           console.log("Colision seta");
           break;
 
         case 'rayo':
-          this.coche.setVelocidad(0.02);
+          this.coche.setVelocidad(0.92);
           console.log("Colision rayo");
           break;
       }
