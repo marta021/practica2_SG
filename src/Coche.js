@@ -32,6 +32,22 @@ class Modelo extends THREE.Object3D {
 
         this.coche_nivelIntermedio.position.y=2*tubo.getRadio();
         this.coche.add(this.coche_nivelIntermedio);
+       
+
+
+
+        this.camara = new THREE. PerspectiveCamera (70, window.innerWidth / window.innerHeight, 0.1, 1000) ;
+        
+        this.camara.position. set (0,5 ,-7) ;
+        var puntoDeMiraRelativo = new THREE. Vector3 (0.1 , -0.05 ,1) ;
+        this.target= new THREE. Vector3 ( ) ;
+        this.camara . getWorldPosition ( this.target) ;
+    
+       this.target.add ( puntoDeMiraRelativo ) ;
+       
+        this.camara.lookAt (this.target ) ;
+        this.coche.add(this.camara);
+
         this.add(this.coche);
     }
 

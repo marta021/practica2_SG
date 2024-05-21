@@ -274,7 +274,7 @@ class MyScene extends THREE.Scene {
   getCamera () {
     // En principio se devuelve la única cámara que tenemos
     // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
-    return this.camera;
+    return this.camaraActual ? this.camera : this.coche.camara;
   }
   
   setCameraAspect (ratio) {
@@ -339,6 +339,16 @@ class MyScene extends THREE.Scene {
       case 'D':
         this.coche.rotarCoche(0.2);
         break;
+      case ' ':
+          this.camaraActual=!this.camaraActual;
+          if (this.camaraActual) {
+            this.camaraActual = true;
+           
+        } else {
+            this.camaraActual = false;
+            
+        }
+          break;
     }
   }
 
