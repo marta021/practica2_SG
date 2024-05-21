@@ -5,6 +5,8 @@ class Estrella extends THREE.Object3D {
   constructor( ) {
     super();
 
+    this.rotationalSpeed =  0.01;
+
     // Se crea la parte de la interfaz que corresponde a la grapadora
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
   
@@ -71,9 +73,9 @@ class Estrella extends THREE.Object3D {
     this.scale.set(0.2, 0.2, 0.2);
 
     
-  this.circularRadius = 3;
-  this.angularSpeed = 0.02;
-  this.angle=0;
+  // this.circularRadius = 3;
+  // this.angularSpeed = 0.02;
+  // this.angle=0;
 
 
   }
@@ -81,9 +83,7 @@ class Estrella extends THREE.Object3D {
  
 
   update() {
-    this.position.x = this.circularRadius * Math.cos(this.angle);
-    this.position.z = this.circularRadius * Math.sin(this.angle);
-    this.angle += this.angularSpeed;
+    this.rotation.y += this.rotationalSpeed;
   }
 }
 

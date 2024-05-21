@@ -5,6 +5,7 @@ class Fantasma extends THREE.Object3D {
   constructor() {
     super();
 
+    this.rotationalSpeed =  0.01;
   
 
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
@@ -75,17 +76,16 @@ var fantasmita = new THREE.Mesh(fantasmaCSG.toGeometry(),this.material);
   this.add(fantasmita);
   this.scale.set(0.2, 0.2, 0.2);
 
-  this.circularRadius = 3;
-  this.angularSpeed = 0.02;
-  this.angle=0;
+  // this.circularRadius = 3;
+  // this.angularSpeed = 0.02;
+  // this.angle=0;
   }
 
 
 
   update() {
-    this.position.x = this.circularRadius * Math.cos(this.angle);
-        this.position.z = this.circularRadius * Math.sin(this.angle);
-        this.angle += this.angularSpeed;
+    this.rotation.y += this.rotationalSpeed;
+
   }
 }
 
