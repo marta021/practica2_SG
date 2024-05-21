@@ -17,7 +17,7 @@ class Rayo extends THREE.Object3D {
         
         this.rayo = new THREE.Mesh(rayoGeometry, rayoMaterial);
 
-        //this.add(this.rayo);
+        this.add(this.rayo);
         this.scale.set(0.1, 0.1, 0.1);
 
         const tRayo = Math.random();
@@ -32,7 +32,7 @@ class Rayo extends THREE.Object3D {
 
         this.position.y+= 1.5* tubo.getRadio();
 
-        this.name = 'rayo'
+        this.name = 'rayo';
     }
 
     // createGUI(gui, titleGui) {

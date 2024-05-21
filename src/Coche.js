@@ -77,25 +77,40 @@ class Modelo extends THREE.Object3D {
         this.segmentos = 100;
         this.binormales = this.spline.computeFrenetFrames(this.segmentos, true ).binormals;
 
-        var origen = {t: 0};
+        this.origen = {t: 0};
         var destino = {t: 1};
         this.velocidad = 30000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
-        var aumentar = false;
 
-        this.animacion = new TWEEN.Tween(origen).to(destino, this.velocidad)
+        this.animacion = new TWEEN.Tween(this.origen).to(destino, this.velocidad)
             .onUpdate(() => {
+                if (this.colisionPincho){
+                    this.setVelocidad(1.5);
+                    this.colisionPincho=false;
+                    console.log("Colisión con pincho: VELOCIDAD REDUCIDA");
+                } else if (this.colisionSeta){
+                    this.setVelocidad(0.8);
+                    this.colisionSeta=false;
+                    console.log("Colisión con seta: VELOCIDAD AUMENTADA");
+                } else if (this.colisionRayo){
+                    this.setVelocidad(0.92);
+                    this.colisionRayo=false;
+                    console.log("Colisión con rayo: VELOCIDAD REDUCIDA  ");
+                }
                 // Se actualiza la posición de la cámara siguiendo la curva
-                var posicion = this.spline.getPointAt(origen.t);
+                var posicion = this.spline.getPointAt(this.origen.t);
                 this.position.copy(posicion);
                 // Se actualiza la orientación de la cámara mirando al "lookAt" de la curva
-                var tangente = this.spline.getTangentAt(origen.t);
+                var tangente = this.spline.getTangentAt(this.origen.t);
                 posicion.add(tangente);
-                this.up = this.binormales[Math.floor(origen.t * this.segmentos)];
+                this.up = this.binormales[Math.floor(this.origen.t * this.segmentos)];
                 this.lookAt(posicion);
             })
             .onRepeat(() => { // Se aumenta la velocidad del coche un 10% en cada repetición / vuelta
                 let velocidad_factor = 0.9;
-                this.setVelocidad(velocidad_factor);
+                //this.setVelocidad(velocidad_factor);
+                this.velocidad = this.getVelocidad()*velocidad_factor;
+                this.animacion.duration(this.getVelocidad());
+                console.log("Vuelta completada: VELOCIDAD AUMENTADA UN 10%");
             })
             .repeat(Infinity)
             .start();
@@ -103,14 +118,25 @@ class Modelo extends THREE.Object3D {
             return this.animacion;
     }
 
-    setVelocidad(velocidad) {
-        this.velocidad = this.getVelocidad() * velocidad;
-        this.animacion.duration(this.getVelocidad());
+    setVelocidad(factor_velocidad, origen) {
+        // if (this.animacion.isPlaying()){
+        //     this.animacion.stop();
+        // }
+
+        console.log("Velocidad actual: " + this.getVelocidad());
+        this.velocidad = this.getVelocidad() * factor_velocidad;
+        console.log("Velocidad nueva: " + this.getVelocidad());
+        //this.animacion.to(1, this.getVelocidad());
+        this.animacion.startFromCurrentValues(this.getVelocidad());
     }
     
 
     getVelocidad(){
         return this.velocidad;
+    }
+
+    getOrigen(){
+        return this.origen;   
     }
 
 

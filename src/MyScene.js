@@ -124,10 +124,7 @@ class MyScene extends THREE.Scene {
         objeto.position.set(x, y, z);
         objeto.position.y += (Math.round(Math.random()) * 2 - 1) * 1.5;
         objeto.rotateZ= (Math.PI/2);
-        //var objeto_obs = new THREE.Object3D();
-        // objeto_obs = objeto;
         this.obstaculos.add(objeto);
-        // this.add(objeto);
 
         posiciones.push(puntoEnCurva);
     }
@@ -169,12 +166,12 @@ objetoVoladorAleatorio(){
         let puntoEnCurva;
         let t;
         let tangente;
-        
+
         while (!posicionValida) {
-            t = Math.random(); 
-            puntoEnCurva = this.tubo.path.getPointAt(t); 
+            t = Math.random();
+            puntoEnCurva = this.tubo.path.getPointAt(t);
             tangente= this.tubo.getPath().getTangentAt(t).normalize();
-            
+
             posicionValida = true;
             for (const pos of posiciones) {
                 const distancia = puntoEnCurva.distanceTo(pos);
@@ -185,12 +182,12 @@ objetoVoladorAleatorio(){
             }
         }
 
-        
+
         const x = puntoEnCurva.x;
         const y = puntoEnCurva.y;
         const z = puntoEnCurva.z ;
 
-        
+
         const objeto = this.objetoVoladorAleatorio();
         objeto.position.set(x, y, z);
         objeto.position.y += 4;
@@ -198,11 +195,11 @@ objetoVoladorAleatorio(){
         // this.objetosVoladores.push(objeto);
        //objeto.rotateOnAxis(tangente,( Math.random() * Math.PI * 2) );
        //objeto.rotateZ= (Math.PI/2);
-        
-        this.add(objeto);
-       
 
-        
+        this.add(objeto);
+
+
+
         posiciones.push(puntoEnCurva);
     }
   }
@@ -345,8 +342,8 @@ objetoVoladorAleatorio(){
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
     
-     
-    //   // MANEJAR OBJETOS VOLADORES 
+
+    //   // MANEJAR OBJETOS VOLADORES
      this.coche.update();
     //  this.colocarObjetosVoladores();
      
@@ -378,10 +375,10 @@ objetoVoladorAleatorio(){
           this.camaraActual=!this.camaraActual;
           if (this.camaraActual) {
             this.camaraActual = true;
-           
+
         } else {
             this.camaraActual = false;
-            
+
         }
           break;
     }
@@ -398,17 +395,20 @@ objetoVoladorAleatorio(){
     if (this.colisiones.length > 0 && this.colisiones[0].distance < 0.3 ) {
       switch (this.colisiones[0].object.parent.name) {
         case 'pincho':
-          this.coche.setVelocidad(1.5);
+          //this.coche.setVelocidad(1.5);
+          this.coche.colisionPincho = true;
           console.log('Colision pincho');
           break;
 
         case 'seta':
-          this.coche.setVelocidad(0.8);
+          //this.coche.setVelocidad(0.8);
+          this.coche.colisionSeta = true;
           console.log("Colision seta");
           break;
 
         case 'rayo':
-          this.coche.setVelocidad(0.92);
+          //this.coche.setVelocidad(0.92);
+          this.coche.colisionRayo = true;
           console.log("Colision rayo");
           break;
       }
