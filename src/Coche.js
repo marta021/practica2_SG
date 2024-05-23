@@ -79,12 +79,12 @@ class Modelo extends THREE.Object3D {
 
         this.origen = {t: 0};
         var destino = {t: 1};
-        this.velocidad = 30000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
+        this.velocidad = 70000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
 
         this.animacion = new TWEEN.Tween(this.origen).to(destino, this.velocidad)
             .onUpdate(() => {
                 if (this.colisionPincho){
-                    this.setVelocidad(1.5);
+                    this.setVelocidad(1.1);
                     this.colisionPincho=false;
                     console.log("Colisión con pincho: VELOCIDAD REDUCIDA");
                 } else if (this.colisionSeta){
@@ -92,9 +92,17 @@ class Modelo extends THREE.Object3D {
                     this.colisionSeta=false;
                     console.log("Colisión con seta: VELOCIDAD AUMENTADA");
                 } else if (this.colisionRayo){
-                    this.setVelocidad(0.92);
+                    this.setVelocidad(1.2);
                     this.colisionRayo=false;
                     console.log("Colisión con rayo: VELOCIDAD REDUCIDA  ");
+                } else if (this.pickEstrella){
+                    this.setVelocidad(0.85);
+                    this.pickEstrella=false;
+                    console.log("Pick con estrella: VELOCIDAD aumentada  ");
+                }else if (this.pickFantasma){
+                    this.setVelocidad(0.8);
+                    this.pickFantasma=false;
+                    console.log("Pick con fantasma: VELOCIDAD aumentada  ");
                 }
                 // Se actualiza la posición de la cámara siguiendo la curva
                 var posicion = this.spline.getPointAt(this.origen.t);
@@ -107,9 +115,11 @@ class Modelo extends THREE.Object3D {
             })
             .onRepeat(() => { // Se aumenta la velocidad del coche un 10% en cada repetición / vuelta
                 let velocidad_factor = 0.9;
-                //this.setVelocidad(velocidad_factor);
-                this.velocidad = this.getVelocidad()*velocidad_factor;
-                this.animacion.duration(this.getVelocidad());
+                this.setVelocidad(velocidad_factor);
+                // console.log("Velocidad actual: " + this.getVelocidad());
+                // this.velocidad = this.getVelocidad()*velocidad_factor;
+                // //this.animacion.duration(this.getVelocidad());
+                // this.animacion.startFromCurrentValues(this.getVelocidad());
                 console.log("Vuelta completada: VELOCIDAD AUMENTADA UN 10%");
             })
             .repeat(Infinity)
@@ -118,7 +128,7 @@ class Modelo extends THREE.Object3D {
             return this.animacion;
     }
 
-    setVelocidad(factor_velocidad, origen) {
+    setVelocidad(factor_velocidad) {
         // if (this.animacion.isPlaying()){
         //     this.animacion.stop();
         // }

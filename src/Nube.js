@@ -44,25 +44,11 @@ class Nube extends THREE.Object3D {
     nubeShape.quadraticCurveTo(-4, 5, -6, 3);
     nubeShape.quadraticCurveTo(-8, 5, -10, 3);
 
-
-
-
-
-    
-
     // nubeShape.quadraticCurveTo(2, 1, -2, 3);
     // nubeShape.quadraticCurveTo(-4, 5, -6, 3);
     // nubeShape.quadraticCurveTo(-8, 6, -12, 2);
 
     
-
-
-
-
-
-
-    
-
 
     // figBaseShape.quadraticCurveTo(0, 0, 0, 0);
     // Dibujar Shape
@@ -83,13 +69,22 @@ class Nube extends THREE.Object3D {
     var figBaseGeometry = new THREE.ExtrudeGeometry(nubeShape, extrudeSettings);
     //En caso de ser necesario trasladar, rotar o escalar la figura
 
-  var nube= new THREE.Mesh(figBaseGeometry, this.material);
-  this.add(nube);
+  this.nube= new THREE.Mesh(figBaseGeometry, this.material);
+
+  this.nube.userData = this;
+
+
+  this.add(this.nube);
   this.scale.set(0.1, 0.1, 0.1);
+
+  this.name = 'nube';
+
 
   }
 
- 
+ recibeClic(mesh){
+  
+ }
 
   update() {
     this.rotation.y += this.rotationalSpeed;

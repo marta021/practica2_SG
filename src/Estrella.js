@@ -76,6 +76,7 @@ class Estrella extends THREE.Object3D {
   // this.circularRadius = 3;
   // this.angularSpeed = 0.02;
   // this.angle=0;
+  this.name = 'estrella';
 
 
   }

@@ -79,6 +79,8 @@ var fantasmita = new THREE.Mesh(fantasmaCSG.toGeometry(),this.material);
   // this.circularRadius = 3;
   // this.angularSpeed = 0.02;
   // this.angle=0;
+
+  this.name = 'fantasma';
   }
 
 

@@ -75,6 +75,8 @@ class MyScene extends THREE.Scene {
 
 	 // --- OBJETOS VOLADORES --- //
     this.distanciaRecorrida=0;
+    this.voladores = new THREE.Object3D();
+
     
     // --- COLISIONES ---- //
     this.raycaster = new THREE.Raycaster();
@@ -87,6 +89,14 @@ class MyScene extends THREE.Scene {
 
 
     this.add(this.obstaculos);
+    this.add(this.voladores);
+
+
+    // --- PICKING --- //
+    this.mouse = new THREE.Vector2();
+    this.raycasterPicking = new THREE.Raycaster();
+    this.puntuacion=0;
+    this.ponerPuntuacion();
   }
 
   crearObjetosSuelo(){
@@ -192,11 +202,11 @@ objetoVoladorAleatorio(){
         objeto.position.set(x, y, z);
         objeto.position.y += 4;
 
-        // this.objetosVoladores.push(objeto);
+        this.voladores.add(objeto);
        //objeto.rotateOnAxis(tangente,( Math.random() * Math.PI * 2) );
        //objeto.rotateZ= (Math.PI/2);
 
-        this.add(objeto);
+       
 
 
 
@@ -325,6 +335,12 @@ objetoVoladorAleatorio(){
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
+  ponerPuntuacion(){
+    this.elementoPuntuacion = document.createElement('div');
+    this.elementoPuntuacion.id='score';
+    this.elementoPuntuacion.innerHTML='Puntuación: <span id="score-value">0</span>';
+    document.body.appendChild(this.elementoPuntuacion);
+  }
   update () {
 
     // ACTUALIZACION DEL MOVIMIENTO del coche
@@ -355,42 +371,20 @@ objetoVoladorAleatorio(){
   });
 
 
-
       //COMPROBACION DE COLISIONES
       var posicion_coche = this.getObjectByName("coche_basico").getWorldPosition(new THREE.Vector3());
       var direccion_coche = this.coche.getWorldDirection(new THREE.Vector3());
       this.testColision(posicion_coche,direccion_coche);
 
   }
-  // // --- MOVIMIENTO CON LAS TECLAS --- //
-  onKeyDown(event) {
-    switch ( String.fromCharCode (event.which || event.key) ) {
-      case 'A':
-        this.coche.rotarCoche(-0.2); // Velocidad de rotación. Mayor número --> mayor velocidad
-        break;
-      case 'D':
-        this.coche.rotarCoche(0.2);
-        break;
-      case ' ':
-          this.camaraActual=!this.camaraActual;
-          if (this.camaraActual) {
-            this.camaraActual = true;
 
-        } else {
-            this.camaraActual = false;
-
-        }
-          break;
-    }
-  }
-
-  // --- COLSIONES  --- //
-  testColision(posicion, direccion) {
-    direccion = direccion.normalize();
-    this.raycaster.set(posicion, direccion);
-    this.colisiones = this.raycaster.intersectObjects(this.obstaculos.children, true); //true para que se haga la intersección con los hijos de los hijos
-                                                                             // Vector de intersectados
-    
+    // --- COLSIONES  --- //
+    testColision(posicion, direccion) {
+      direccion = direccion.normalize();
+      this.raycaster.set(posicion, direccion);
+      this.colisiones = this.raycaster.intersectObjects(this.obstaculos.children, true); //true para que se haga la intersección con los hijos de los hijos
+                                                                               // Vector de intersectados
+      
     // console.log(this.colisiones[0].distance);
     if (this.colisiones.length > 0 && this.colisiones[0].distance < 0.3 ) {
       switch (this.colisiones[0].object.parent.name) {
@@ -414,7 +408,71 @@ objetoVoladorAleatorio(){
       }
     }
     // return false;
+    document.getElementById('score-value').innerText = this.puntuacion;
+
   }
+
+
+  // --- MOVIMIENTO CON LAS TECLAS --- //
+  onKeyDown(event) {
+    switch ( String.fromCharCode (event.which || event.key) ) {
+      case 'A':
+        this.coche.rotarCoche(-0.2); // Velocidad de rotación. Mayor número --> mayor velocidad
+        break;
+      case 'D':
+        this.coche.rotarCoche(0.2);
+        break;
+      case ' ':
+          this.camaraActual=!this.camaraActual;
+          if (this.camaraActual) {
+            this.camaraActual = true;
+
+        } else {
+            this.camaraActual = false;
+
+        }
+          break;
+    }
+  }
+
+  // --- PICKING --- //
+  onMouseDown ( event ) {
+   // Obtener la posición del clic del mouse en coordenadas normalizadas
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Actualizar el raycaster con la posición del clic del mouse y la cámara actual
+    this.raycaster.setFromCamera(this.mouse, this.getCamera());
+
+    // Realizar la intersección del rayo con los objetos que deseas seleccionar
+    const intersects = this.raycaster.intersectObjects(this.voladores.children, true);
+
+    // Verificar si se han encontrado intersecciones
+    if (intersects.length > 0) {
+        // Seleccionar el primer objeto intersectado (el más cercano al clic del mouse)
+        const selectedObject = intersects[0].object;
+
+        if (selectedObject.parent.name=='estrella') {
+          // Disminuir la velocidad del coche
+          this.puntuacion+=10;
+          this.coche.pickEstrella = true;
+          console.log("Pick Estrella");
+          // Aumentar la puntuación del jugador
+          this.puntuacion += 10;
+      } else if (selectedObject.parent.name=='nube') {
+          // No hay efecto especial en la velocidad del coche
+          // Aumentar la puntuación del jugador
+          this.puntuacion += 5;
+      } else if (selectedObject.parent.name=='fantasma') {
+          // Disminuir aún más la velocidad del coche
+          this.coche.pickFantasma = true;
+          console.log("Pick fantasma");
+          this.puntuacion+=15;
+
+      }
+
+    }
+}
 }
 
 /// La función   main
@@ -428,6 +486,7 @@ $(function () {
 
   // //Listener para las teclas
    window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
+   window.addEventListener("mousedown", (event) => scene.onMouseDown(event));
 
   // Que no se nos olvide, la primera visualización.
   scene.update();
