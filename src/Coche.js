@@ -64,7 +64,7 @@ class Modelo extends THREE.Object3D {
 
 // --- ANIMACION DEL COCHE (movimiento) ---//
 
-    animacion(){
+    animacion(origen = {t: 0}, velocidad=70000){
 
         //---Definicion del spline / camino a seguir---//
         //Mismos puntos que el tubo
@@ -77,9 +77,9 @@ class Modelo extends THREE.Object3D {
         this.segmentos = 100;
         this.binormales = this.spline.computeFrenetFrames(this.segmentos, true ).binormals;
 
-        this.origen = {t: 0};
+        this.origen = origen;
         var destino = {t: 1};
-        this.velocidad = 70000; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
+        this.velocidad = velocidad; // 5000 ms = 5 segundos. ESTO ES LA VELOCIDAD CUANDO ES INFINITO
 
         this.animacion = new TWEEN.Tween(this.origen).to(destino, this.velocidad)
             .onUpdate(() => {
@@ -115,10 +115,11 @@ class Modelo extends THREE.Object3D {
             })
             .onRepeat(() => { // Se aumenta la velocidad del coche un 10% en cada repetición / vuelta
                 let velocidad_factor = 0.9;
-                this.setVelocidad(velocidad_factor);
-                // console.log("Velocidad actual: " + this.getVelocidad());
-                // this.velocidad = this.getVelocidad()*velocidad_factor;
-                // //this.animacion.duration(this.getVelocidad());
+                //this.setVelocidad(velocidad_factor);
+                 console.log("Velocidad actual: " + this.getVelocidad());
+                 this.velocidad = this.getVelocidad()*velocidad_factor;
+                 this.animacion.duration(this.getVelocidad());
+                 console.log("Velocidad nueva: " + this.getVelocidad());
                 // this.animacion.startFromCurrentValues(this.getVelocidad());
                 console.log("Vuelta completada: VELOCIDAD AUMENTADA UN 10%");
             })
@@ -136,10 +137,13 @@ class Modelo extends THREE.Object3D {
         console.log("Velocidad actual: " + this.getVelocidad());
         this.velocidad = this.getVelocidad() * factor_velocidad;
         console.log("Velocidad nueva: " + this.getVelocidad());
-        //this.animacion.to(1, this.getVelocidad());
+        //this.animacion.duration(this.getVelocidad());
         this.animacion.startFromCurrentValues(this.getVelocidad());
+        //this.animacion = animacion(this.position, this.getVelocidad());
     }
     
+
+
 
     getVelocidad(){
         return this.velocidad;

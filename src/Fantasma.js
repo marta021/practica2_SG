@@ -73,6 +73,10 @@ var fantasmaCSG = new CSG();
 fantasmaCSG =fantasmaCSG.union([esfMesh,esfMesh2,esfMesh3,esfMesh4]);
 
 var fantasmita = new THREE.Mesh(fantasmaCSG.toGeometry(),this.material);
+  fantasmita.add(ojomesh1);
+  fantasmita.add(ojomesh2);
+  fantasmita.add(bocamesh);
+  
   this.add(fantasmita);
   this.scale.set(0.2, 0.2, 0.2);
 

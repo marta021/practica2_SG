@@ -390,20 +390,20 @@ objetoVoladorAleatorio(){
       switch (this.colisiones[0].object.parent.name) {
         case 'pincho':
           //this.coche.setVelocidad(1.5);
+          this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionPincho = true;
-          console.log('Colision pincho');
           break;
 
         case 'seta':
           //this.coche.setVelocidad(0.8);
+          this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionSeta = true;
-          console.log("Colision seta");
           break;
 
         case 'rayo':
           //this.coche.setVelocidad(0.92);
+          this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionRayo = true;
-          console.log("Colision rayo");
           break;
       }
     }
@@ -456,6 +456,7 @@ objetoVoladorAleatorio(){
           // Disminuir la velocidad del coche
           this.puntuacion+=10;
           this.coche.pickEstrella = true;
+          selectedObject.parent.remove(selectedObject);
           console.log("Pick Estrella");
           // Aumentar la puntuación del jugador
           this.puntuacion += 10;
@@ -463,10 +464,13 @@ objetoVoladorAleatorio(){
           // No hay efecto especial en la velocidad del coche
           // Aumentar la puntuación del jugador
           this.puntuacion += 5;
+          selectedObject.parent.remove(selectedObject);
+          console.log("Pick nube");
       } else if (selectedObject.parent.name=='fantasma') {
           // Disminuir aún más la velocidad del coche
           this.coche.pickFantasma = true;
           console.log("Pick fantasma");
+          selectedObject.parent.remove(selectedObject);
           this.puntuacion+=15;
 
       }
