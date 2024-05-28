@@ -47,10 +47,14 @@ class MyScene extends THREE.Scene {
     
     // Construimos los distinos elementos que tendremos en la escena
     
+    //--LUCES --//
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
     this.createLights ();
+    this.reloj = new THREE.Clock(); // Para calcular el tiempo de las luces
+    this.reloj.stop();
 
+  
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
 
@@ -71,8 +75,7 @@ class MyScene extends THREE.Scene {
 
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
-    this.coche.animacion(); // Iniciamos la animacion del coche
-   // this.velocidad = 0.050;
+    this.coche.animacion();
 
 	 // --- OBJETOS VOLADORES --- //
     this.distanciaRecorrida=0;
@@ -252,7 +255,7 @@ objetoVoladorAleatorio(){
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
-      lightIntensity : 0.5,
+      lightIntensity : 0.75,
       axisOnOff : true
     }
     // Se crea una sección para los controles de esta clase
@@ -276,9 +279,9 @@ objetoVoladorAleatorio(){
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    var ambientLight = new THREE.AmbientLight(/*'#828282'*/'#646464', 0.4);
     // La añadimos a la escena
-    this.add (ambientLight);
+    //this.add (ambientLight);
     
     // Se crea una luz focal que va a ser la luz principal de la escena
     // La luz focal, además tiene una posición, y un punto de mira
@@ -363,10 +366,26 @@ objetoVoladorAleatorio(){
     requestAnimationFrame(() => this.update());
     this.personaje.update();
 
-    //   // MANEJAR OBJETOS VOLADORES
+    //   MOVIMIENTO DEL COCHE
      this.coche.update();
     //  this.colocarObjetosVoladores();
      
+    if (this.colisionDesventaja) {
+      this.reloj.start();
+      this.setLightIntensity(0.0);
+      console.log("ATENCION: consecuencia de colision con rayo/pincho ACTIVADA (se va la luz)");
+      this.colisionDesventaja = false;
+      this.consecuenciaDesventaja = true;
+    }
+
+    if (this.consecuenciaDesventaja && this.reloj.getElapsedTime() > 5) {
+      this.setLightIntensity(0.8);
+      console.log("ATENCION: consecuencia de colision con rayo/pincho DESACTIVADA (vuelve la luz)");
+      this.reloj.stop();
+      this.consecuenciaDesventaja = false;
+    }
+  
+
 
      this.children.forEach(child => {
       if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
@@ -396,11 +415,13 @@ objetoVoladorAleatorio(){
           //this.coche.setVelocidad(1.5);
           this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionPincho = true;
+          this.colisionDesventaja = true;
           break;
 
         case 'seta':
           //this.coche.setVelocidad(0.8);
           this.colisiones[0].object.parent.remove(this.colisiones[0].object);
+          //this.colisiones[0].object.parent.setLightVisible(false);
           this.coche.colisionSeta = true;
           break;
 
@@ -408,6 +429,7 @@ objetoVoladorAleatorio(){
           //this.coche.setVelocidad(0.92);
           this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionRayo = true;
+          this.colisionDesventaja = true;
           break;
       }
     }
@@ -461,6 +483,7 @@ objetoVoladorAleatorio(){
           this.puntuacion+=10;
           this.coche.pickEstrella = true;
           selectedObject.parent.remove(selectedObject);
+          selectedObject.parent.setLightVisible(false);
           console.log("Pick Estrella");
           // Aumentar la puntuación del jugador
           this.puntuacion += 10;

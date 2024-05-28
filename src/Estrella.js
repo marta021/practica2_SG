@@ -84,11 +84,19 @@ class Estrella extends THREE.Object3D {
   // this.angularSpeed = 0.02;
   // this.angle=0;
   this.name = 'estrella';
-
+    this.createLights();
 
   }
 
- 
+  createLights() {
+    this.luz = new THREE.PointLight(0xffffff, 5, 5);// Segundo parámetro es intensidad
+    this.luz.position.set(0,2,0);
+    this.add(this.luz);
+}
+
+setLightVisible (visible) {
+    this.luz.visible = visible;
+}
 
   update() {
     this.rotation.y += this.rotationalSpeed;

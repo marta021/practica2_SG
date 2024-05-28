@@ -66,6 +66,7 @@ class Pincho extends THREE.Object3D {
         this.position.y+=2* tubo.getRadio();
 
         this.name = 'pincho';
+        this.createLights();
     }
 
     // createGUI(gui, titleGui) {
@@ -80,6 +81,12 @@ class Pincho extends THREE.Object3D {
     //     folder.add(this.guiControls, 'rotar', 0.5, 5.0, 0.1).name('Rotacion: ').listen();
     // }
 
+
+    createLights() {
+        this.luz = new THREE.PointLight(0x00A8FF, 5, 5);// Segundo parámetro es intensidad
+        this.luz.position.set(0,1,0);
+        this.add(this.luz);
+    }
     update() {
     //     if (this.guiControls.rotar) {
     //         this.rotation.z += 0.01;

@@ -35,11 +35,21 @@ class Rayo extends THREE.Object3D {
         this.position.y+= 1.5* tubo.getRadio();
 
         this.name = 'rayo';
+
+        this.createLights();
+
     }
 
     // createGUI(gui, titleGui) {
         
     // }
+
+    createLights() {
+        this.luz = new THREE.PointLight(0xF29007, 5, 5);// Segundo parámetro es intensidad
+        this.luz.position.set(0,2,0);
+        this.add(this.luz);
+    }
+    
 
     update() {
         //this.rotation.x += 0.01;

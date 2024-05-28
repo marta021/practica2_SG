@@ -40,6 +40,10 @@ class Seta extends THREE.Object3D {
         this.position.y+=1.5;
         
         this.name = 'seta';
+
+        this.createLights();
+
+  
     }
     
     createSeta(materialSeta) {
@@ -83,6 +87,9 @@ class Seta extends THREE.Object3D {
 
     }
 
+    setLightVisible(visible) {
+        this.luz.visible = visible;
+    }
 
     // createGUI(gui, titleGui) {
     //     // // Controles para el movimiento 
@@ -99,6 +106,11 @@ class Seta extends THREE.Object3D {
 
     // }
 
+    createLights() {
+        this.luz = new THREE.PointLight(0xF20707, 5, 5);// Segundo parámetro es intensidad
+        this.luz.position.set(0,2,0);
+        this.add(this.luz);
+    }
 
     update() {
     //     if (this.guiControls.rotar) {
