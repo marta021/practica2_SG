@@ -17,6 +17,7 @@ import { Estrella } from './Estrella.js'
 import { Pincho } from './Pincho.js'
 import { Seta } from './Seta.js'
 import { Rayo } from './Rayo.js'
+import { Personaje } from './Modelo.js'
 
 
 
@@ -90,6 +91,8 @@ class MyScene extends THREE.Scene {
 
     this.add(this.obstaculos);
     this.add(this.voladores);
+ this.personaje = new Personaje();
+ this.add(this.personaje);
 
 
     // --- PICKING --- //
@@ -358,7 +361,7 @@ objetoVoladorAleatorio(){
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update());
-    
+    this.personaje.update();
 
     //   // MANEJAR OBJETOS VOLADORES
      this.coche.update();
