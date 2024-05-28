@@ -6,7 +6,12 @@ class Pincho extends THREE.Object3D {
         super();
         this.path=tubo.getPath();
         // this.createGUI(gui, titleGui);
-        var material = new THREE.MeshNormalMaterial;
+        var loader = new THREE.TextureLoader();
+    var textura = loader.load("textura-piedra.jpg");
+    var materialPincho = new THREE.MeshStandardMaterial({
+         bumpMap: textura,
+        bumpScale:0.1
+    });
 
 
         var geometryCone1 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 32 );
@@ -32,17 +37,18 @@ class Pincho extends THREE.Object3D {
         
         
         //Se construyen los Meshes
-        var esferaMesh = new THREE.Mesh(geometrySphere, material);
-        var cone1Mesh = new THREE.Mesh(geometryCone1, material );
-        var cone2Mesh = new THREE.Mesh(geometryCone2, material );
-        var cone3Mesh = new THREE.Mesh(geometryCone3, material );
-        var cone4Mesh = new THREE.Mesh(geometryCone4, material );
+        var esferaMesh = new THREE.Mesh(geometrySphere, materialPincho);
+        var cone1Mesh = new THREE.Mesh(geometryCone1, materialPincho );
+        var cone2Mesh = new THREE.Mesh(geometryCone2, materialPincho );
+        var cone3Mesh = new THREE.Mesh(geometryCone3, materialPincho );
+        var cone4Mesh = new THREE.Mesh(geometryCone4, materialPincho );
 
        
         //Se crea el objeto CSG y se opera con él
         var csg = new CSG();
         csg.union([esferaMesh,cone1Mesh, cone2Mesh, cone3Mesh, cone4Mesh]); // CORCHETES OBLIGATORIOS, AUQNUE SOLO HAYA UN PARAMETRO     
         var resultado = csg.toMesh();
+        
 
         this.add(resultado);
         this.scale.set(0.1, 0.1, 0.1);

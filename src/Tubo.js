@@ -8,12 +8,14 @@ class Tubo extends THREE.Object3D {
     this.createGUI(gui, titleGui);
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
     // Material para la figura
-    this.material = new THREE.MeshNormalMaterial({ flatShading: true, side: THREE.DoubleSide, transparent: false, opacity: 0.5 });
-    // Poner transparente a true para ver el interior de la figura y ver si se va a hacer correctamente la resta
-    // Material para la figura a restar
-    this.materialSubtract = new THREE.MeshPhysicalMaterial({ color: 0x008000, flatShading: true, side: THREE.DoubleSide });
     
-    
+    var loader = new THREE.TextureLoader();
+    var textura = loader.load("circuito.jpg");
+    // textura.wrapS = THREE.RepeatWrapping; // Repetir en dirección S
+    // textura.wrapT = THREE.RepeatWrapping; // Repetir en dirección T
+    // textura.repeat.set(5, 5); // Repetir 2 veces en dirección S y 1 vez en dirección T
+    var materialTubo = new THREE.MeshStandardMaterial({map:textura});
+
     
     var puntos = [
       new THREE.Vector3(4, 0, 3),    
@@ -58,7 +60,7 @@ class Tubo extends THREE.Object3D {
     this.binormales = spline.computeFrenetFrames(this.segmentos, true ).binormals;
     var geomTubo = new THREE.TubeGeometry(this.path, resolucion, this.radio,this.segmentos,true);
 
-    var tubo = new THREE.Mesh(geomTubo,this.material);
+    var tubo = new THREE.Mesh(geomTubo,materialTubo);
     this.add(tubo);
     
     //this.scale.set(0.5, 0.5, 0.5);

@@ -13,9 +13,11 @@ class Rayo extends THREE.Object3D {
 
         var rayoGeometry = new THREE.ExtrudeGeometry(rayoShape, options);
 
-        var rayoMaterial = new THREE.MeshPhongMaterial( { color: 0xfff700 } );
+        var loader = new THREE.TextureLoader();
+    var textura = loader.load("lunares-blancos.jpg");
+    var materialRayo = new THREE.MeshStandardMaterial({map:textura});
         
-        this.rayo = new THREE.Mesh(rayoGeometry, rayoMaterial);
+        this.rayo = new THREE.Mesh(rayoGeometry, materialRayo);
 
         this.add(this.rayo);
         this.scale.set(0.1, 0.1, 0.1);

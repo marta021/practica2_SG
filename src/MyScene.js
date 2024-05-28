@@ -300,6 +300,7 @@ objetoVoladorAleatorio(){
     // Se instancia un Renderer   WebGL
     var renderer = new THREE.WebGLRenderer();
     
+
     // Se establece un color de fondo en las imágenes que genera el render
     renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
     
@@ -484,7 +485,17 @@ $(function () {
 
   // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
   var scene = new MyScene("#WebGL-output");
+  var esferaRadio=90;
+  var esferaSegmentos=50;
 
+  var esferaGeometry =  new THREE.SphereGeometry(esferaRadio, esferaSegmentos, esferaSegmentos);
+  
+  var loader = new THREE.TextureLoader();
+  var texture = loader.load("cielo.png");
+  var fondoboxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+
+  var fondobox = new THREE.Mesh(esferaGeometry, fondoboxMaterial);
+  scene.add(fondobox);
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
 

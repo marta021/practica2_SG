@@ -4,11 +4,18 @@ class Seta extends THREE.Object3D {
     constructor(tubo) {
         super();
 
+        var colorSeta = 0xff0000;
+        var materialSeta = new THREE.MeshStandardMaterial({
+          color: colorSeta,
+          roughness: 0.2,
+          metalness: 0.5
+    
+        });
         this.path = tubo.getPath();
 
         const anguloZ = Math.random() * 360;
         this.rotation.z += Math.PI/2;
-        var seta = this.createSeta();
+        var seta = this.createSeta(materialSeta);
         
         this.add(seta);
         this.scale.set(0.1, 0.1, 0.1);
@@ -35,7 +42,7 @@ class Seta extends THREE.Object3D {
         this.name = 'seta';
     }
     
-    createSeta() {
+    createSeta(materialSeta) {
 
          this.setPuntos();
         
@@ -44,7 +51,7 @@ class Seta extends THREE.Object3D {
         var material = new THREE.MeshNormalMaterial();
         material.flatShading = true;
         material.needsUpdate = true;
-        const seta = new THREE.Mesh(setaGeometry, material);
+        const seta = new THREE.Mesh(setaGeometry, materialSeta);
 
         seta.position.set(0, 0, 0);
 

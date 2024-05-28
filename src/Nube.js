@@ -12,12 +12,9 @@ class Nube extends THREE.Object3D {
 
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
     // Material para la figura
-    this.material = new THREE.MeshNormalMaterial({ flatShading: true, side: THREE.DoubleSide, transparent: false, opacity: 0.5 });
-    // Poner transparente a true para ver el interior de la figura y ver si se va a hacer correctamente la resta
-
-    // Material para la figura a restar
-    this.materialSubtract = new THREE.MeshPhysicalMaterial({ color: 0x008000, flatShading: true, side: THREE.DoubleSide });
-
+    var loader = new THREE.TextureLoader();
+    var textura = loader.load("nube.jpg");
+    var materialNube = new THREE.MeshStandardMaterial({map:textura});
 
     // BASE
 
@@ -69,7 +66,7 @@ class Nube extends THREE.Object3D {
     var figBaseGeometry = new THREE.ExtrudeGeometry(nubeShape, extrudeSettings);
     //En caso de ser necesario trasladar, rotar o escalar la figura
 
-  this.nube= new THREE.Mesh(figBaseGeometry, this.material);
+  this.nube= new THREE.Mesh(figBaseGeometry, materialNube);
 
   this.nube.userData = this;
 
