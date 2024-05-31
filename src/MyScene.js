@@ -75,7 +75,6 @@ class MyScene extends THREE.Scene {
 
     //---- VARIABLES DEL MOVIMIENTO ----//
     this.movimiento = [false, false]; //0: izquierda[a], 1: derecha[d]
-    this.coche.animacion();
 
 	 // --- OBJETOS VOLADORES --- //
     this.distanciaRecorrida=0;
@@ -430,6 +429,7 @@ objetoVoladorAleatorio(){
           this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionRayo = true;
           this.colisionDesventaja = true;
+          this.puntuacion-=5;
           break;
       }
     }
