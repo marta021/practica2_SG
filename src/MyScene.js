@@ -372,14 +372,14 @@ objetoVoladorAleatorio(){
     if (this.colisionDesventaja) {
       this.reloj.start();
       this.setLightIntensity(0.0);
-      console.log("ATENCION: consecuencia de colision con rayo/pincho ACTIVADA (se va la luz)");
+      console.log("ATENCION: consecuencia de colision con rayo ACTIVADA (se va la luz)");
       this.colisionDesventaja = false;
       this.consecuenciaDesventaja = true;
     }
 
     if (this.consecuenciaDesventaja && this.reloj.getElapsedTime() > 5) {
       this.setLightIntensity(0.8);
-      console.log("ATENCION: consecuencia de colision con rayo/pincho DESACTIVADA (vuelve la luz)");
+      console.log("ATENCION: consecuencia de colision con rayo DESACTIVADA (vuelve la luz)");
       this.reloj.stop();
       this.consecuenciaDesventaja = false;
     }
@@ -414,7 +414,6 @@ objetoVoladorAleatorio(){
           //this.coche.setVelocidad(1.5);
           this.colisiones[0].object.parent.remove(this.colisiones[0].object);
           this.coche.colisionPincho = true;
-          this.colisionDesventaja = true;
           break;
 
         case 'seta':
@@ -483,7 +482,7 @@ objetoVoladorAleatorio(){
           this.puntuacion+=10;
           this.coche.pickEstrella = true;
           selectedObject.parent.remove(selectedObject);
-          selectedObject.parent.setLightVisible(false);
+          //selectedObject.parent.setLightVisible(false);
           console.log("Pick Estrella");
           // Aumentar la puntuación del jugador
           this.puntuacion += 10;
@@ -494,8 +493,6 @@ objetoVoladorAleatorio(){
           selectedObject.parent.remove(selectedObject);
           console.log("Pick nube");
       } else if (selectedObject.parent.name=='fantasma') {
-          // Disminuir aún más la velocidad del coche
-          this.coche.pickFantasma = true;
           console.log("Pick fantasma");
           selectedObject.parent.remove(selectedObject);
           this.puntuacion+=15;
@@ -517,7 +514,7 @@ $(function () {
   var esferaGeometry =  new THREE.SphereGeometry(esferaRadio, esferaSegmentos, esferaSegmentos);
   
   var loader = new THREE.TextureLoader();
-  var texture = loader.load("cielo.png");
+  var texture = loader.load("../img/cielo.png");
   var fondoboxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
 
   var fondobox = new THREE.Mesh(esferaGeometry, fondoboxMaterial);

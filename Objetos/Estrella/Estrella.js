@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CSG } from '../libs/CSG-v2.js'
+import { CSG } from '../../libs/CSG-v2.js'
 
 class Estrella extends THREE.Object3D {
   constructor( ) {
@@ -28,19 +28,19 @@ class Estrella extends THREE.Object3D {
     });
 
 
-    var cilGeo1 = new THREE.CylinderGeometry(0.01, 1, 4, 15); 
+    var cilGeo1 = new THREE.CylinderGeometry(0.01, 1, 4, 40); 
    cilGeo1.translate(0, 2, 0); //Traslacion
    //cilGeometryBot.rotateX(Math.PI / 2);//Rotacion
    var cilMeshBot1 = new THREE.Mesh(cilGeo1, materialEstrella);
    //this.add(cilMeshBot1);
 
-   var cilGeo2 = new THREE.CylinderGeometry(0.01, 1, 4, 15); 
+   var cilGeo2 = new THREE.CylinderGeometry(0.01, 1, 4, 40); 
    cilGeo2.translate(0, 2, 0); //Traslacion
    cilGeo2.rotateX(Math.PI / 2.5);
    var cilMeshBot2 = new THREE.Mesh(cilGeo2,materialEstrella);
    //this.add(cilMeshBot2);
 
-   var cilGeo3 = new THREE.CylinderGeometry(0.01, 1, 4, 15); 
+   var cilGeo3 = new THREE.CylinderGeometry(0.01, 1, 4, 40); 
    cilGeo3.translate(0, 2, 0); //Traslacion
 
    cilGeo3.rotateX(-Math.PI / 2.5);
@@ -48,7 +48,7 @@ class Estrella extends THREE.Object3D {
    //this.add(cilMeshBot3);
 
 
-   var cilGeo4 = new THREE.CylinderGeometry(0.01, 1, 4, 15); 
+   var cilGeo4 = new THREE.CylinderGeometry(0.01, 1, 4, 40); 
    cilGeo4.translate(0, 2, 0); //Traslacion
 
    cilGeo4.rotateX(Math.PI/1.25);
@@ -57,7 +57,7 @@ class Estrella extends THREE.Object3D {
 
 
 
-   var cilGeo5 = new THREE.CylinderGeometry(0.01, 1, 4, 15); 
+   var cilGeo5 = new THREE.CylinderGeometry(0.01, 1, 4, 40); 
    cilGeo5.translate(0, 2, 0); //Traslacion
 
    cilGeo5.rotateX(-Math.PI/1.25);

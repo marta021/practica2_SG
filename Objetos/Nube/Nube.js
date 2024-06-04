@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CSG } from '../libs/CSG-v2.js'
+import { CSG } from '../../libs/CSG-v2.js'
 
 class Nube extends THREE.Object3D {
   constructor() {
@@ -13,7 +13,7 @@ class Nube extends THREE.Object3D {
     // El material se usa desde varios métodos. Por eso se alamacena en un atributo
     // Material para la figura
     var loader = new THREE.TextureLoader();
-    var textura = loader.load("../img/nube.jpg");
+    var textura = loader.load("../../img/nube.jpg");
     var materialNube = new THREE.MeshStandardMaterial({map:textura});
 
     // BASE

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CSG } from '../libs/CSG-v2.js'
+import { CSG } from '../../libs/CSG-v2.js'
 class Tubo extends THREE.Object3D {
   constructor(gui, titleGui) {
     super();
@@ -10,7 +10,7 @@ class Tubo extends THREE.Object3D {
     // Material para la figura
     
     var loader = new THREE.TextureLoader();
-    var textura = loader.load("../img/circuito.jpg");
+    var textura = loader.load("../../img/circuito.jpg");
     // textura.wrapS = THREE.RepeatWrapping; // Repetir en dirección S
     // textura.wrapT = THREE.RepeatWrapping; // Repetir en dirección T
     // textura.repeat.set(5, 5); // Repetir 2 veces en dirección S y 1 vez en dirección T
@@ -48,7 +48,7 @@ class Tubo extends THREE.Object3D {
 
     this.path = new THREE.CatmullRomCurve3(puntos, true);
 
-    var resolucion= 50;
+    var resolucion= 200;
     this.radio= 1;
     this.segmentos = 20;
 

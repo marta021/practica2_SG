@@ -4,23 +4,23 @@ import { CSG } from '../../libs/CSG-v2.js'
 class Pincho extends THREE.Object3D {
     constructor(tubo) {
         super();
-        this.path=tubo.getPath();
+        //this.path=tubo.getPath();
         // this.createGUI(gui, titleGui);
         var loader = new THREE.TextureLoader();
-    var textura = loader.load("../img/textura-piedra.jpg");
+    var textura = loader.load("../../img/textura-piedra.jpg");
     var materialPincho = new THREE.MeshStandardMaterial({
          bumpMap: textura,
         bumpScale:0.1
     });
 
 
-        var geometryCone1 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 20 );
-        var geometryCone2 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 20 );
-        var geometryCone3 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 20 );
-        var geometryCone4 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 20 );
+        var geometryCone1 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 32 );
+        var geometryCone2 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 32 );
+        var geometryCone3 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 32 );
+        var geometryCone4 = new THREE.CylinderGeometry( 0.01, 1.25, 3.5, 32 );
        
 
-        var geometrySphere = new THREE.SphereGeometry( 1.5, 20, 16 );
+        var geometrySphere = new THREE.SphereGeometry( 1.5, 32, 16 );
          
 
         //Se posicionan y orientan 
@@ -56,14 +56,14 @@ class Pincho extends THREE.Object3D {
         const tPincho = Math.random();
 
         // Obtiene la posición y la tangente en el punto correspondiente a 'tSeta' en el tubo
-        const posPincho = this.path.getPointAt(tPincho);
-        const tangente = this.path.getTangentAt(tPincho).normalize();
+        // const posPincho = this.path.getPointAt(tPincho);
+        // const tangente = this.path.getTangentAt(tPincho).normalize();
 
-        // Calcula la posición y la orientación de la seta en el tubo
-        this.position.copy(posPincho);
-        this.lookAt(posPincho.clone().add(tangente));
+        // // Calcula la posición y la orientación de la seta en el tubo
+        // this.position.copy(posPincho);
+        // this.lookAt(posPincho.clone().add(tangente));
 
-        this.position.y+=2* tubo.getRadio();
+        // this.position.y+=2* tubo.getRadio();
 
         this.name = 'pincho';
         this.createLights();

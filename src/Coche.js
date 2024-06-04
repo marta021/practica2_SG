@@ -93,10 +93,6 @@ class Modelo extends THREE.Object3D {
             this.setVelocidad(1.15);
             this.pickEstrella=false;
             console.log("Pick con estrella: VELOCIDAD aumentada  ");
-        }else if (this.pickFantasma){
-            this.setVelocidad(1.1);
-            this.pickFantasma=false;
-            console.log("Pick con fantasma: VELOCIDAD aumentada  ");
         }
 
 

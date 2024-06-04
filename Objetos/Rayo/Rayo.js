@@ -4,7 +4,7 @@ class Rayo extends THREE.Object3D {
     constructor(tubo) {        
         super();
 
-        this.path = tubo.getPath();
+        //this.path = tubo.getPath();
         // this.createGUI(gui, titleGui);
 
         var rayoShape = this.crearShape();
@@ -14,7 +14,7 @@ class Rayo extends THREE.Object3D {
         var rayoGeometry = new THREE.ExtrudeGeometry(rayoShape, options);
 
         var loader = new THREE.TextureLoader();
-    var textura = loader.load("../img/lunares-blancos.jpg");
+    var textura = loader.load("../../img/lunares-blancos.jpg");
     var materialRayo = new THREE.MeshStandardMaterial({map:textura});
         
         this.rayo = new THREE.Mesh(rayoGeometry, materialRayo);
@@ -25,14 +25,14 @@ class Rayo extends THREE.Object3D {
         const tRayo = Math.random();
 
         // Obtiene la posición y la tangente en el punto correspondiente a 'tSeta' en el tubo
-        const posRayo = this.path.getPointAt(tRayo);
-        const tangenteRayo = this.path.getTangentAt(tRayo).normalize();
+        // const posRayo = this.path.getPointAt(tRayo);
+        // const tangenteRayo = this.path.getTangentAt(tRayo).normalize();
 
-        // Calcula la posición y la orientación de la seta en el tubo
-        this.position.copy(posRayo);
-        this.lookAt(posRayo.clone().add(tangenteRayo));
+        // // Calcula la posición y la orientación de la seta en el tubo
+        // this.position.copy(posRayo);
+        // this.lookAt(posRayo.clone().add(tangenteRayo));
 
-        this.position.y+= 1.5* tubo.getRadio();
+        // this.position.y+= 1.5* tubo.getRadio();
 
         this.name = 'rayo';
 

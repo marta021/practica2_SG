@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CSG } from '../libs/CSG-v2.js'
+import { CSG } from '../../libs/CSG-v2.js'
 
 class Fantasma extends THREE.Object3D {
   constructor() {
@@ -58,7 +58,7 @@ var ojo2 = new THREE.SphereGeometry(0.2,25,20);
 var ojomesh2 = new THREE.Mesh(ojo2, this.materialOjosBoca);
 this.add(ojomesh2);
    
-var boca = new THREE.CircleGeometry(0.2,15);
+var boca = new THREE.CircleGeometry(0.2,20);
  boca.scale(0.5,0.75,0);
  boca.translate(0.0,0.0, 0.5); //Traslacion
 var bocamesh = new THREE.Mesh(boca, this.materialOjosBoca);
