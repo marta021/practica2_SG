@@ -386,10 +386,10 @@ objetoVoladorAleatorio(){
   
 
 
-     this.children.forEach(child => {
-      if (child instanceof Nube || child instanceof Fantasma || child instanceof Estrella) {
-          child.update();
-      }
+     
+      this.voladores.children.forEach(objetoVolador => {
+        objetoVolador.update();
+    
   });
 
 

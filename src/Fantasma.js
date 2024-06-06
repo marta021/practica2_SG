@@ -5,7 +5,7 @@ class Fantasma extends THREE.Object3D {
   constructor() {
     super();
 
-    this.rotationalSpeed =  0.01;
+    this.rotationalSpeed =  0.05;
   
     this.materialCuerpo = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, side: THREE.DoubleSide, transparent: false, opacity: 0.5 });
     

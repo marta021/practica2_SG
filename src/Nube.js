@@ -5,7 +5,7 @@ class Nube extends THREE.Object3D {
   constructor() {
     super();
 
-      this.rotationalSpeed =  0.01;
+      this.rotationalSpeed =  0.05;
     // Se crea la parte de la interfaz que corresponde a la grapadora
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     
